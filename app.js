@@ -1,5 +1,6 @@
 var restify = require('restify');
 var builder = require('botbuilder');
+var flight = require('./data/flights.js');
 
 //=========================================================
 // Bot Setup
@@ -29,6 +30,8 @@ bot.dialog('/', dialog);
 //=========================================================
 // Dialogos - utilizamos el mismo que short-app.js
 //=========================================================
+
+var inMemoryStorage = new builder.MemoryBotStorage();
 
 // Acá se manejan los intents
 dialog.matches('Greeting', [
@@ -66,6 +69,24 @@ dialog.matches('cancelar', [
             respuesta = 'Ok no hay problema, cancelaremos su compra de servicios adicionales';
         }
         session.send(respuesta);
+    }
+]);
+
+dialog.matches('FligthStatus', [
+    function(session) {
+        builder.Prompts.text(session, "Por favor digite la fecha del vuelo (ej: Enero 1)");
+    },
+    function(session, results) {
+        session.dialogData.fligthDate = results.response;
+        builder.Prompts.number(session, "Por favor digite el numero del vuelo   ");
+    },
+    function(session, results, status) {
+        session.dialogData.numberFligth = results.response;
+        let fstatus = flight.status;
+
+        // Process request and display reservation details
+        session.send(`El estado del vuelo No. ${session.dialogData.numberFligth} de fecha ${session.dialogData.fligthDate}, es: ${fstatus}`);
+        session.endDialog();
     }
 ]);
 
