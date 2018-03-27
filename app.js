@@ -73,19 +73,57 @@ dialog.matches('cancelar', [
 ]);
 
 dialog.matches('FligthStatus', [
-    function(session) {
-        builder.Prompts.text(session, "Por favor digite la fecha del vuelo (ej: Enero 1)");
+            (session, args, status) => {
+                /* let sNumber = builder.EntityRecognizer.findEntity(args.entities, 'builtin.number');
+                let route = builder.EntityRecognizer.findEntity(args.entities, 'route');
+                let sTo = builder.EntityRecognizer.findEntity(args.entities, 'Location::toLocation');
+                let sFrom = builder.EntityRecognizer.findEntity(args.entities, 'Location::fromLocation');
+                let sDate = builder.EntityRecognizer.findEntity(args.entities, 'builtin.datetimeV2.date');
+                let fstatus = flight.status; */
+                this.control = '';
+                this.sNumber = null;
+                this.sTo = 'MED';
+                this.sFrom = 'BOG';
+                this.sDate = null;
+                this.fstatus = 'Schedule';
+
+                if (this.sDate) {
+                    if (this.sFrom && this.sTo) {
+                        session.send(`El estado del vuelo No. ${this.sNumber ?`${this.sNumber}`:`123`} de fecha ${this.sDate} con ruta  ${this.sFrom} -  ${this.sTo}, es: ${this.fstatus}`);
+            } else if (this.sNumber) {
+                session.send(`El estado del vuelo No. ${this.sNumber} de fecha ${this.sDate} con ruta ${this.sFrom ?`${this.sFrom}`:`BOG`} - ${this.sTo ?`${this.sTo}`:`MED`}, es: ${this.fstatus}`);
+            } else {
+                this.control = 'getNumOrRou';
+                builder.Prompts.text(session, "Por favor digite numero del vuelo o ruta");
+            }
+        } else if (this.sFrom && this.sTo) {
+            this.control = 'getDate';
+            builder.Prompts.text(session, 'Por favor digite la fecha del vuelo (ej: Enero 1)');
+        } else if (this.sNumber) {
+            this.control = 'getDate';
+            builder.Prompts.text(session, 'Por favor digite la fecha del vuelo (ej: Enero 1)');
+        } else {
+            builder.Prompts.text(session, 'Por favor digite la fecha del vuelo (ej: Enero 1)');
+        }
     },
-    function(session, results) {
-        session.dialogData.fligthDate = results.response;
-        builder.Prompts.number(session, "Por favor digite el numero del vuelo   ");
+    (session, results) => {
+
+        if (this.control == 'getDate') {
+            session.dialogData.fligthDate = results.response;
+            session.send(`El estado del vuelo No. ${this.sNumber ?`${this.sNumber}`:`123`} de fecha ${session.dialogData.fligthDate} con ruta ${this.sFrom ?`${this.sFrom}`:`BOG`} - ${this.sTo ?`${this.sTo}`:`MED`}, es: ${this.fstatus}`);
+        } else if (this.control == 'getNumOrRou') {
+            session.dialogData.fligthNumber = results.response;
+            session.send(`El estado del vuelo No. ${session.dialogData.fligthNumber} de fecha ${this.sDate} con ruta ${this.sFrom ?`${this.sFrom}`:`BOG`} - ${this.sTo ?`${this.sTo}`:`MED`}, es: ${this.fstatus}`);
+        } else {
+            session.dialogData.fligthDate = results.response;
+            builder.Prompts.text(session, "Por favor digite numero de vuelo o ruta");
+        }
     },
-    function(session, results, status) {
-        session.dialogData.numberFligth = results.response;
-        let fstatus = flight.status;
+    (session, results) => {
+        session.dialogData.fligthNumber = results.response;
 
         // Process request and display reservation details
-        session.send(`El estado del vuelo No. ${session.dialogData.numberFligth} de fecha ${session.dialogData.fligthDate}, es: ${fstatus}`);
+        session.send(`El estado del vuelo No. ${session.dialogData.fligthNumber}, de fecha ${session.dialogData.fligthDate}, es: ${this.fstatus}`);
         session.endDialog();
     }
 ]);
