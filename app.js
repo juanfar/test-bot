@@ -1,11 +1,5 @@
-<<<<<<< HEAD
-/*-----------------------------------------------------------------------------
-A simple echo bot for the Microsoft Bot Framework. 
------------------------------------------------------------------------------*/
-=======
 // This loads the environment variables from the .env file
 //require('dotenv-extended').load();
->>>>>>> module
 
 var restify = require('restify');
 var builder = require('botbuilder');
