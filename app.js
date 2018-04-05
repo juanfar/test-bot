@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 /*-----------------------------------------------------------------------------
 A simple echo bot for the Microsoft Bot Framework. 
 -----------------------------------------------------------------------------*/
+=======
+// This loads the environment variables from the .env file
+//require('dotenv-extended').load();
+>>>>>>> module
 
 var restify = require('restify');
 var builder = require('botbuilder');
@@ -28,7 +33,7 @@ server.post('/api/messages', connector.listen());
 * For samples and documentation, see: https://github.com/Microsoft/BotBuilder-Azure
 * ---------------------------------------------------------------------------------------- */
 
-var model = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/64f40c86-c107-4029-b252-d55babae9310?subscription-key=2f230fb39a3d48c1b82161f3fb306966&verbose=true&q=';
+var model = 'https://eastus.api.cognitive.microsoft.com/luis/v2.0/apps/64f40c86-c107-4029-b252-d55babae9310?subscription-key=56501f9ed4df464aa7df835ae26c1d13&verbose=true&timezoneOffset=0&q=';
 
 var tableName = 'botdata';
 var azureTableClient = new botbuilder_azure.AzureTableClient(tableName, process.env['AzureWebJobsStorage']);

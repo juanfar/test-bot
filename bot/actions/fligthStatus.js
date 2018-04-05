@@ -6,8 +6,6 @@ var request_route;
 var operation = require('../operaciones/fligthStatus.operations.js');
 
 
-module.exports.namer = namer;
-
 module.exports = [(session, args, status) => {
         let sNumber = builder.EntityRecognizer.findEntity(args.entities, 'builtin.number');
         let sFrom = builder.EntityRecognizer.findAllEntities(args.entities, 'Ciudades');
