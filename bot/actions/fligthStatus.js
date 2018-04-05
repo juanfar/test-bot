@@ -1,16 +1,14 @@
 var builder = require('botbuilder');
 var msg = require('../msg.json');
-request_number = require('../../servicios/flightStatusByNumber.js');
+var request_number = require('../../servicios/flightStatusByNumber.js');
 //request_route = require('../../servicios/flightStatusByRoute.js');
 var request_route;
 var operation = require('../operaciones/fligthStatus.operations.js');
 
 
-var namer = 'amb';
 module.exports.namer = namer;
 
 module.exports = [(session, args, status) => {
-        var namer = 'amb';
         let sNumber = builder.EntityRecognizer.findEntity(args.entities, 'builtin.number');
         let sFrom = builder.EntityRecognizer.findAllEntities(args.entities, 'Ciudades');
         let sTo = builder.EntityRecognizer.findAllEntities(args.entities, 'Ciudades');
@@ -30,10 +28,8 @@ module.exports = [(session, args, status) => {
                     this.sNumber = sNumber.entity;
                 }
             } else this.sNumber = sNumber.entity;
-            
-            this.sNumber = sNumber.entity;
         }
-        
+        this.sNumber = sNumber.entity;
 
         if (this.sDate) {
             if (this.sFrom && this.sTo) {
