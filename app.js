@@ -52,13 +52,9 @@ bot.dialog('/', dialog);
 
 
 // Acá se manejan los intents
-dialog.matches('Greeting', [require('./actions/greeting.js')]);
+dialog.matches('Greeting', [require('./bot/actions/greeting.js')]);
 
-dialog.matches('comprar', [require('./actions/comprar.js')]);
-
-dialog.matches('cancelar', [require('./actions/cancelar.js')]);
-
-dialog.matches('FligthStatus', require('./actions/fligthStatus.js'));
+dialog.matches('FligthStatus', require('./bot/actions/fligthStatus.js'));
 
 //Este es el Default, cuando LUIS no entendió la consulta.
 dialog.onDefault(builder.DialogAction.send(
