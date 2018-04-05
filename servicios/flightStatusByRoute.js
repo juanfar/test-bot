@@ -1,5 +1,5 @@
 const request = require('request');
-var config = require('../integracion/config.json');
+var config = require('../servicios/servicios.config.json');
 var _int = require('../integracion/intClass.js');
 var json;
 
