@@ -1,0 +1,11 @@
+{
+    "ByNumber" : {
+        "method": "GET",
+        "url" : "https://avapiacceturedesa.azure-api.net/api/integration/v1/flighstatusbynumber"
+    },
+    "ByRoute" : {
+        "method": "GET",
+        "url" : "https://avapiacceturedesa.azure-api.net/api/integration/v1/flightstatuswithweather"
+    }
+}
+
