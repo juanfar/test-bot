@@ -11,13 +11,13 @@ const options = {
         'x-channel': 'BOT',
         'x-correlation-id': 'UUID',
         'Ocp-Apim-Subscription-Key': 'c3e7baf5ccb1422986d4b1d5ef617f4f',
-        'gzip': true
+        'Accept-Encoding': 'gzip'
     }
 };
 
 request(options, function(err, res, body) {
     //console.logint.openID('www.google.com');
     json = JSON.parse(body);
-    //console.log(json);
+    console.log(json);
     module.exports.num = json;
 });
