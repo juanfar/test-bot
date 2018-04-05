@@ -22,14 +22,18 @@ module.exports = [(session, args, status) => {
         if (sTo.length > 0) this.sTo = sTo[1];
         if (sDate) this.sDate = sDate;
 
+        console.log();
+
          if (sNumber) {
             if (sNumber && sDate) {
                 if (sNumber.startIndex !== sDate.startIndex) {
-                    this.sNumber[0] = sNumber.entity;
+                    this.sNumber = sNumber.entity;
                 }
             } else this.sNumber = sNumber.entity;
+            
+            this.sNumber = sNumber.entity;
         }
-        //this.sNumber = sNumber.entity;
+        
 
         if (this.sDate) {
             if (this.sFrom && this.sTo) {
