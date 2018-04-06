@@ -4,7 +4,7 @@
     "getNumOrRou": "Por favor digite numero del vuelo o ruta",
     "noService" : "El sistema esta temporalmente fuera de servicio",
     "noNumber" : "Lo siento no encotramos ese numero de vuelo para esa fecha",
-    "noRoute" : "Lo siento no tenemos vuelos con esa ruta para esa fecha",
+    "noRoute" : "Lo sentimos, no encontramos vuelos para esta ruta y fecha",
     "allInfo": "El estado del vuelo No. ${messages.sNumber ?`${messages.sNumber}`:`123`} de fecha ${messages.sDate} con ruta ${messages.sFrom} -  ${messages.sTo}, es: ${messages.fstatus}"
   }
 }

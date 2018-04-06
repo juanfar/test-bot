@@ -1,9 +1,43 @@
+'use strict'
+
 var builder = require('botbuilder');
 var msg = require('../msg.json');
 var request_number = require('../../servicios/flightStatusByNumber.js');
-var request_route = require('../../servicios/flightStatusByRoute.js');
-
+//var request_route = require('../../servicios/flightStatusByRoute.js');
+var _route;
 //request_number.api();
+
+function callApi (date, number, from, to) {
+
+
+    const request = require('request');
+    //var config = require('../servicios/servicios.config.json');
+    //var _int = require('../integracion/intClass.js');
+    const options = {  
+            url: `https://avapiacceturedesa.azure-api.net/api/integration/v1/flightstatuswithweather?origen=${from}&destino=${to}&fechaViajeDT=${date}`,
+            method: 'GET',
+            gzip: true,
+            headers: {
+            'Accept-Language': 'es',
+            'x-channel': 'BOT',
+            'x-correlation-id': 'UUID',
+            'Ocp-Apim-Subscription-Key': 'c3e7baf5ccb1422986d4b1d5ef617f4f',
+            'Accept-Encoding' : 'gzip'
+        }
+    };
+
+    return new Promise(function(resolve, reject) {
+    	// Do async job
+        request.get(options, function(err, resp, body) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(JSON.parse(body));
+            }
+        })
+    })
+
+}
 
 module.exports = [(session, args, status) => {
         let sNumber = builder.EntityRecognizer.findEntity(args.entities, 'builtin.number');
@@ -11,11 +45,12 @@ module.exports = [(session, args, status) => {
         let sTo = builder.EntityRecognizer.findAllEntities(args.entities, 'Ciudades');
         let sDate = builder.EntityRecognizer.findEntity(args.entities, 'builtin.datetimeV2.date');
         let fstatus = 'Schedule';
-        let dateTime = new Date(request_number.number.flights[0].FechaHoraSalidaP);
+        let dateTime = new Date(request_number.number.flights[0].FechaHoraLlegadaP);
+        //let timeP = getTime(_route.flights[i].Estado);
         this.control = '';
 
 
-        console.log('from-> ',   request_number.number.flights[0].Destino);
+        //console.log('hora llegada-> ', timeP);
 
         if (dateTime) this.dateTime = dateTime;
         if (sFrom.length > 0) this.sFrom = sFrom[0];
@@ -30,17 +65,31 @@ module.exports = [(session, args, status) => {
             } else this.sNumber = sNumber.entity;
         }
 
-
         if (this.sDate) {
             if (this.sFrom && this.sTo) {
 
-                if(this.sFrom.resolution.values[0] == request_number.number.flights[0].Origen && this.sTo.resolution.values[0] == request_number.number.flights[0].Destino && this.sDate.resolution.values[0].value == this.dateTime.toISOString().slice(0, -14)) {
+                console.log(this.dateTime.toISOString().slice(0, -14), this.sFrom.resolution.values[0], this.sTo.resolution.values[0]);
 
-                    session.send(`a1 -> El estado del vuelo entre ${this.sFrom.entity} y ${this.sTo.entity} con fecha ${this.sDate.entity}, es: ${request_number.number.flights[0].Estado}`);
+                var call = callApi(this.dateTime.toISOString().slice(0, -14), '', this.sFrom.resolution.values[0], this.sTo.resolution.values[0]);
+                call.then(function(result) {
+                    _route = result;
+                    console.log("Initialized _route");
+                    console.log(_route);
 
-               } else {
-                   session.send(msg.status.noRoute);
-               }
+                    if(_route.flights) {
+                        if (_route.flights.length > 1) {
+                            session.send('Encontré los siguientes vuelos para esta ruta y fecha:');
+                            for(let i=0; i <_route.flights.length; i++) {
+                                session.send(`Numero de vuelo: ${_route.flights[i].Vuelo}, Estado: ${_route.flights[i].Estado}`);
+                            }
+                        }
+                    } else session.send(msg.status.noRoute);
+                    
+
+                }, function(err) {
+                    console.log('ERR', err);
+                    session.send(msg.status.noRoute);
+                })
             
             } else if (this.sNumber) {
 
