@@ -2,19 +2,28 @@
 
 var builder = require('botbuilder');
 var msg = require('../msg.json');
-var request_number = require('../../servicios/flightStatusByNumber.js');
-//var request_route = require('../../servicios/flightStatusByRoute.js');
+//var request_number = require('../../servicios/flightStatusByNumber.js');
+var request_route = require('../../servicios/flightStatusByRoute.js');
 var _route;
+var _number;
+var call;
 //request_number.api();
 
 function callApi (date, number, from, to) {
 
+    let urlA;
+
+    console.log( 'NUMBER -> ', number);
+
+    if (number != null) {
+        urlA = `https://avapiacceturedesa.azure-api.net/api/integration/v1/flighstatusbynumber?flightNumber=${number}&flightDate=${date}`;
+    } else urlA = `https://avapiacceturedesa.azure-api.net/api/integration/v1/flightstatuswithweather?origen=${from}&destino=${to}&fechaViajeDT=${date}`;
+
+    console.log( 'URL -> ', urlA);
 
     const request = require('request');
-    //var config = require('../servicios/servicios.config.json');
-    //var _int = require('../integracion/intClass.js');
     const options = {  
-            url: `https://avapiacceturedesa.azure-api.net/api/integration/v1/flightstatuswithweather?origen=${from}&destino=${to}&fechaViajeDT=${date}`,
+            url: urlA,
             method: 'GET',
             gzip: true,
             headers: {
@@ -45,41 +54,34 @@ module.exports = [(session, args, status) => {
         let sTo = builder.EntityRecognizer.findAllEntities(args.entities, 'Ciudades');
         let sDate = builder.EntityRecognizer.findEntity(args.entities, 'builtin.datetimeV2.date');
         let fstatus = 'Schedule';
-        let dateTime = new Date(request_number.number.flights[0].FechaHoraLlegadaP);
+        //let dateTime = new Date(request_number.number.flights[0].FechaHoraLlegadaP);
         //let timeP = getTime(_route.flights[i].Estado);
         this.control = '';
 
 
         //console.log('hora llegada-> ', timeP);
 
-        if (dateTime) this.dateTime = dateTime;
+        //if (dateTime) this.dateTime = dateTime;
         if (sFrom.length > 0) this.sFrom = sFrom[0];
         if (sTo.length > 0) this.sTo = sTo[1];
         if (sDate) this.sDate = sDate;
 
-         if (sNumber) {
-            if (sNumber && sDate) {
-                if (sNumber.startIndex !== sDate.startIndex) {
-                    this.sNumber = sNumber.entity;
-                }
-            } else this.sNumber = sNumber.entity;
-        }
+        if (sNumber) this.sNumber = sNumber;
 
         if (this.sDate) {
             if (this.sFrom && this.sTo) {
 
-                console.log(this.dateTime.toISOString().slice(0, -14), this.sFrom.resolution.values[0], this.sTo.resolution.values[0]);
-
-                var call = callApi(this.dateTime.toISOString().slice(0, -14), '', this.sFrom.resolution.values[0], this.sTo.resolution.values[0]);
+                console.log(this.sDate.resolution.values[0].value, this.sFrom.resolution.values[0], this.sTo.resolution.values[0]);
+                call = callApi(this.sDate.resolution.values[0].value, null, this.sFrom.resolution.values[0], this.sTo.resolution.values[0]);
                 call.then(function(result) {
                     _route = result;
                     console.log("Initialized _route");
-                    console.log(_route);
+                    //console.log(_route);
 
                     if(_route.flights) {
                         if (_route.flights.length > 1) {
                             session.send('Encontré los siguientes vuelos para esta ruta y fecha:');
-                            for(let i=0; i <_route.flights.length; i++) {
+                            for(let i=0; i < _route.flights.length; i++) {
                                 session.send(`Numero de vuelo: ${_route.flights[i].Vuelo}, Estado: ${_route.flights[i].Estado}`);
                             }
                         }
@@ -88,17 +90,37 @@ module.exports = [(session, args, status) => {
 
                 }, function(err) {
                     console.log('ERR', err);
-                    session.send(msg.status.noRoute);
                 })
+
             
             } else if (this.sNumber) {
 
+                console.log(this.sDate.resolution.values[0].value, this.sNumber.entity);
 
-                if(this.sNumber == request_number.number.flights[0].Vuelo && this.sDate.resolution.values[0].value == this.dateTime.toISOString().slice(0, -14)) {
+                call = callApi(this.sDate.resolution.values[0].value, this.sNumber.entity, null, null);
+                call.then(function(result) {
+                    _number = result;
+                    console.log("Initialized _number");
+                    //console.log(_number);
+
+                    if(_number.flights) {
+                        session.send(`El estado de este vuelo, es: ${_number.flights[0].Estado}`);
+                    } else {
+                        session.send(msg.status.noNumber);
+                    }
+                    
+
+                }, function(err) {
+                    console.log('ERR', err);
+                })
+
+
+
+               /*  if (this.sNumber == request_number.number.flights[0].Vuelo && this.sDate.resolution.values[0].value == this.dateTime.toISOString().slice(0, -14)) {
                     session.send(`a2 -> El estado del vuelo No. ${this.sNumber} de fecha ${this.sDate.entity}, es: ${request_number.number.flights[0].Estado}`);
                } else {
                    session.send(msg.status.noNumber);
-               }
+               } */
 
 
             } else {
