@@ -2,8 +2,9 @@
 
 var builder = require('botbuilder');
 var msg = require('../msg.json');
+var _fecha = require('../operaciones/fligthStatus.operations.js');
 //var request_number = require('../../servicios/flightStatusByNumber.js');
-var request_route = require('../../servicios/flightStatusByRoute.js');
+//var request_route = require('../../servicios/flightStatusByRoute.js');
 var _route;
 var _number;
 var call;
@@ -53,20 +54,23 @@ module.exports = [(session, args, status) => {
         let sFrom = builder.EntityRecognizer.findAllEntities(args.entities, 'Ciudades');
         let sTo = builder.EntityRecognizer.findAllEntities(args.entities, 'Ciudades');
         let sDate = builder.EntityRecognizer.findEntity(args.entities, 'builtin.datetimeV2.date');
-        let fstatus = 'Schedule';
-        //let dateTime = new Date(request_number.number.flights[0].FechaHoraLlegadaP);
-        //let timeP = getTime(_route.flights[i].Estado);
         this.control = '';
 
-
-        //console.log('hora llegada-> ', timeP);
-
-        //if (dateTime) this.dateTime = dateTime;
         if (sFrom.length > 0) this.sFrom = sFrom[0];
         if (sTo.length > 0) this.sTo = sTo[1];
         if (sDate) this.sDate = sDate;
 
+        /* if (sNumber) {
+            if (sNumber && sDate) {
+                if( sNumber.startIndex == sDate.startIndex) {
+                    
+                }
+            }
+        } */
+
         if (sNumber) this.sNumber = sNumber;
+
+        console.log('SNUMBER->', sNumber.startIndex);
 
         if (this.sDate) {
             if (this.sFrom && this.sTo) {
@@ -76,7 +80,6 @@ module.exports = [(session, args, status) => {
                 call.then(function(result) {
                     _route = result;
                     console.log("Initialized _route");
-                    //console.log(_route);
 
                     if(_route.flights) {
                         if (_route.flights.length > 1) {
@@ -115,17 +118,11 @@ module.exports = [(session, args, status) => {
                 })
 
 
-
-               /*  if (this.sNumber == request_number.number.flights[0].Vuelo && this.sDate.resolution.values[0].value == this.dateTime.toISOString().slice(0, -14)) {
-                    session.send(`a2 -> El estado del vuelo No. ${this.sNumber} de fecha ${this.sDate.entity}, es: ${request_number.number.flights[0].Estado}`);
-               } else {
-                   session.send(msg.status.noNumber);
-               } */
-
-
             } else {
+
             this.control = 'getNumOrRou';
             builder.Prompts.text(session, msg.status.getNumOrRou);
+
             }
 
 
@@ -137,6 +134,7 @@ module.exports = [(session, args, status) => {
         } else if (this.sNumber) {
             this.control = 'getDateNumber';
             builder.Prompts.text(session, msg.status.getDate);
+
         } else {
             builder.Prompts.text(session, msg.status.getDate);
         }
@@ -145,23 +143,58 @@ module.exports = [(session, args, status) => {
         if (this.control == 'getDateNumber') {
             session.dialogData.fligthDate = results.response;
 
-            if(this.sNumber == request_number.number.flights[0].Vuelo) {
-                 session.send(`a3.1 -> El estado del vuelo No. ${this.sNumber} de fecha ${session.dialogData.fligthDate}, es: ${request_number.number.flights[0].Estado}`);
-            } else {
-                session.send(msg.status.noNumber);
-            }
-           
+            let _date = _fecha.fecha(session.dialogData.fligthDate);
+
+            console.log('FECHA ENTRADA-> ',_date);
+
+            console.log(_date, this.sNumber.entity);
+
+            call = callApi(_date, this.sNumber.entity, null, null);
+            call.then(function(result) {
+                _number = result;
+                console.log("Initialized _number");
+                //console.log(_number);
+
+                if(_number.flights) {
+                    session.send(`El estado de este vuelo, es: ${_number.flights[0].Estado}`);
+                } else {
+                    session.send(msg.status.noNumber);
+                }
+                
+
+            }, function(err) {
+                console.log('ERR', err);
+            })
+
+
         } else if (this.control == 'getDateRoute') {
             session.dialogData.fligthDate = results.response;
 
+            let _date = _fecha.fecha(session.dialogData.fligthDate);
 
-            if(this.sFrom.resolution.values[0] == request_number.number.flights[0].Origen && this.sTo.resolution.values[0] == request_number.number.flights[0].Destino) {
+            console.log('FECHA ENTRADA-> ',_date);
 
-                session.send(`a3.2 -> El estado del vuelo entre ${this.sFrom.entity} y ${this.sTo.entity} con fecha ${session.dialogData.fligthDate}, es: ${request_number.number.flights[0].Estado}`);
+            console.log(_date, this.sFrom.resolution.values[0], this.sTo.resolution.values[0]);
 
-            } else {
-                session.send(msg.status.noRoute);
-            }
+                call = callApi(_date, null, this.sFrom.resolution.values[0], this.sTo.resolution.values[0]);
+                call.then(function(result) {
+                    _route = result;
+                    console.log("Initialized _route");
+                    //console.log(_route);
+
+                    if(_route.flights) {
+                        if (_route.flights.length > 1) {
+                            session.send('Encontré los siguientes vuelos para esta ruta y fecha:');
+                            for(let i=0; i < _route.flights.length; i++) {
+                                session.send(`Numero de vuelo: ${_route.flights[i].Vuelo}, Estado: ${_route.flights[i].Estado}`);
+                            }
+                        }
+                    } else session.send(msg.status.noRoute);
+                    
+
+                }, function(err) {
+                    console.log('ERR', err);
+                })
            
         } else if (this.control == 'getNumOrRou') {
 
