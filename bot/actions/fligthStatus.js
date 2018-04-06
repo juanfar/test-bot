@@ -70,8 +70,6 @@ module.exports = [(session, args, status) => {
 
         if (sNumber) this.sNumber = sNumber;
 
-        console.log('SNUMBER->', sNumber.startIndex);
-
         if (this.sDate) {
             if (this.sFrom && this.sTo) {
 
