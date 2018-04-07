@@ -3,51 +3,11 @@
 var builder = require('botbuilder');
 var msg = require('../msg.json');
 var _fecha = require('../operaciones/fligthStatus.operations.js');
-//var request_number = require('../../servicios/flightStatusByNumber.js');
-//var request_route = require('../../servicios/flightStatusByRoute.js');
+var byNumber = require('../../servicios/flightStatusByNumber.js');
+var byRoute = require('../../servicios/flightStatusByRoute.js');
 var _route;
 var _number;
 var call;
-//request_number.api();
-
-function callApi (date, number, from, to) {
-
-    let urlA;
-
-    console.log( 'NUMBER -> ', number);
-
-    if (number != null) {
-        urlA = `https://avapiacceturedesa.azure-api.net/api/integration/v1/flighstatusbynumber?flightNumber=${number}&flightDate=${date}`;
-    } else urlA = `https://avapiacceturedesa.azure-api.net/api/integration/v1/flightstatuswithweather?origen=${from}&destino=${to}&fechaViajeDT=${date}`;
-
-    console.log( 'URL -> ', urlA);
-
-    const request = require('request');
-    const options = {  
-            url: urlA,
-            method: 'GET',
-            gzip: true,
-            headers: {
-            'Accept-Language': 'es',
-            'x-channel': 'BOT',
-            'x-correlation-id': 'UUID',
-            'Ocp-Apim-Subscription-Key': 'c3e7baf5ccb1422986d4b1d5ef617f4f',
-            'Accept-Encoding' : 'gzip'
-        }
-    };
-
-    return new Promise(function(resolve, reject) {
-    	// Do async job
-        request.get(options, function(err, resp, body) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(JSON.parse(body));
-            }
-        })
-    })
-
-}
 
 module.exports = [(session, args, status) => {
         let sNumber = builder.EntityRecognizer.findEntity(args.entities, 'builtin.number');
@@ -73,8 +33,10 @@ module.exports = [(session, args, status) => {
         if (this.sDate) {
             if (this.sFrom && this.sTo) {
 
+                console.log('Ruta DATE/FROMandTO');
                 console.log(this.sDate.resolution.values[0].value, this.sFrom.resolution.values[0], this.sTo.resolution.values[0]);
-                call = callApi(this.sDate.resolution.values[0].value, null, this.sFrom.resolution.values[0], this.sTo.resolution.values[0]);
+
+                call = byRoute.api(this.sDate.resolution.values[0].value, this.sFrom.resolution.values[0], this.sTo.resolution.values[0]);
                 call.then(function(result) {
                     _route = result;
                     console.log("Initialized _route");
@@ -93,12 +55,16 @@ module.exports = [(session, args, status) => {
                     console.log('ERR', err);
                 })
 
-            
+                this.sDate = '';
+                this.sFrom = '';
+                this.sTo = '';
+
             } else if (this.sNumber) {
 
+                console.log('Ruta DATE/NUMBER');
                 console.log(this.sDate.resolution.values[0].value, this.sNumber.entity);
 
-                call = callApi(this.sDate.resolution.values[0].value, this.sNumber.entity, null, null);
+                call = byNumber.api(this.sDate.resolution.values[0].value, this.sNumber.entity);
                 call.then(function(result) {
                     _number = result;
                     console.log("Initialized _number");
@@ -109,36 +75,45 @@ module.exports = [(session, args, status) => {
                     } else {
                         session.send(msg.status.noNumber);
                     }
-                    
 
                 }, function(err) {
                     console.log('ERR', err);
                 })
 
+                this.sDate = '';
+                this.sNumber = '';
+
 
             } else {
 
+            console.log('Ruta DATE/NoRoute-NoNumber');
             this.control = 'getNumOrRou';
             builder.Prompts.text(session, msg.status.getNumOrRou);
 
             }
 
-
         } else if (this.sFrom && this.sTo) {
+
+            console.log('Ruta FROMandTO');
             this.control = 'getDateRoute';
             builder.Prompts.text(session, msg.status.getDate);
 
             
         } else if (this.sNumber) {
+
+            console.log('Ruta NUMBER');
             this.control = 'getDateNumber';
             builder.Prompts.text(session, msg.status.getDate);
 
         } else {
+            console.log('?');
             builder.Prompts.text(session, msg.status.getDate);
         }
     },
     (session, results) => {
+    
         if (this.control == 'getDateNumber') {
+            console.log('Ruta NUMBER-> RES');
             session.dialogData.fligthDate = results.response;
 
             let _date = _fecha.fecha(session.dialogData.fligthDate);
@@ -147,7 +122,7 @@ module.exports = [(session, args, status) => {
 
             console.log(_date, this.sNumber.entity);
 
-            call = callApi(_date, this.sNumber.entity, null, null);
+            call = byNumber.api(_date, this.sNumber.entity);
             call.then(function(result) {
                 _number = result;
                 console.log("Initialized _number");
@@ -159,13 +134,15 @@ module.exports = [(session, args, status) => {
                     session.send(msg.status.noNumber);
                 }
                 
-
             }, function(err) {
                 console.log('ERR', err);
             })
 
+            _date = '';
+            this.sNumber = '';
 
         } else if (this.control == 'getDateRoute') {
+            console.log('Ruta ROUTE-> RES');
             session.dialogData.fligthDate = results.response;
 
             let _date = _fecha.fecha(session.dialogData.fligthDate);
@@ -174,7 +151,7 @@ module.exports = [(session, args, status) => {
 
             console.log(_date, this.sFrom.resolution.values[0], this.sTo.resolution.values[0]);
 
-                call = callApi(_date, null, this.sFrom.resolution.values[0], this.sTo.resolution.values[0]);
+                call = byRoute.api(_date, this.sFrom.resolution.values[0], this.sTo.resolution.values[0]);
                 call.then(function(result) {
                     _route = result;
                     console.log("Initialized _route");
@@ -193,11 +170,13 @@ module.exports = [(session, args, status) => {
                 }, function(err) {
                     console.log('ERR', err);
                 })
+
+                _date = '';
+                this.sFrom = '';
+                this.sTo = '';
            
         } else if (this.control == 'getNumOrRou') {
 
-            session.dialogData.fligthNumber = results.response;
-            session.send(`a4 -> El estado del vuelo No. ${session.dialogData.fligthNumber} de fecha ${this.sDate} con ruta ${this.sFrom ?`${this.sFrom}`:`BOG`} - ${this.sTo ?`${this.sTo}`:`MED`}, es: ${this.fstatus}`);
 
         } else {
             session.dialogData.fligthDate = results.response;
@@ -205,6 +184,7 @@ module.exports = [(session, args, status) => {
         }
     },
     (session, results) => {
+        console.log('Ruta NoDATE/NoRoute-NoNumber RES');
         session.dialogData.fligthNumber = results.response;
         // Process request and display reservation details
         session.send(`a5-> El estado del vuelo No. ${session.dialogData.fligthNumber}, de fecha ${session.dialogData.fligthDate}, es: ${this.fstatus}`);
