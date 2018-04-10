@@ -2,7 +2,7 @@
 
 var builder = require('botbuilder');
 var msg = require('../msg.json');
-var _opera = require('../operaciones/fligthStatus.operations.js');
+var _fecha = require('../operaciones/fligthStatus.operations.js');
 var byNumber = require('../../servicios/flightStatusByNumber.js');
 var byRoute = require('../../servicios/flightStatusByRoute.js');
 var _route;
@@ -43,11 +43,11 @@ module.exports = [(session, args, status) => {
 
                     if(_route.flights) {
                         if (_route.flights.length > 1) {
-                            session.send(msg.status.findFligths);
                             let msg = '';
+                            session.send('Listo, he encontrado mas de un vuelo, sigue abajo todos los estados:');
                             for(let i=0; i < _route.flights.length; i++) {
-                                msg = `${msg} 
-    El estado del vuelo: ${_route.flights[i].Vuelo}, es: ${_route.flights[i].Estado}`;
+                                var d = new Date(_route.flights[i].FechaHoraLlegadaC);
+                                msg = `${msg}  <br/> El estado para el vuelo: ${_route.flights[i].Vuelo}, es: ${_route.flights[i].Estado}, Hora de confirmación: ${d.toTimeString().slice(0, 5)}`;
                             }
                             session.send(msg);
                         }
@@ -74,7 +74,7 @@ module.exports = [(session, args, status) => {
                     //console.log(_number);
 
                     if(_number.flights) {
-                        session.send(`El estado del vuelo: ${_number.flights[0].Vuelo}, es: ${_number.flights[0].Estado}`);
+                        session.send(`El estado del vuelo ${_number.flights[0].Vuelo}, es: ${_number.flights[0].Estado}`);
                     } else {
                         session.send(msg.status.noNumber);
                     }
@@ -109,11 +109,7 @@ module.exports = [(session, args, status) => {
             builder.Prompts.text(session, msg.status.getDate);
 
         } else {
-
-            /* let patron = _opera.validarPatron('de medellin a bogota');
-            console.log('PATRON ->', patron); */
             console.log('?');
-            this.control == 'getNumOrRou';
             builder.Prompts.text(session, msg.status.getDate);
         }
     },
@@ -123,7 +119,7 @@ module.exports = [(session, args, status) => {
             console.log('Ruta NUMBER-> RES');
             session.dialogData.fligthDate = results.response;
 
-            let _date = _opera.fecha(session.dialogData.fligthDate);
+            let _date = _fecha.fecha(session.dialogData.fligthDate);
 
             console.log('FECHA ENTRADA-> ',_date);
 
@@ -136,7 +132,7 @@ module.exports = [(session, args, status) => {
                 //console.log(_number);
 
                 if(_number.flights) {
-                    session.send(`El estado del vuelo: ${_number.flights[0].Vuelo}, es: ${_number.flights[0].Estado}`);
+                    session.send(`El estado del Vuelo ${_number.flights[0].Vuelo}, es: ${_number.flights[0].Estado}`);
                 } else {
                     session.send(msg.status.noNumber);
                 }
@@ -152,7 +148,7 @@ module.exports = [(session, args, status) => {
             console.log('Ruta ROUTE-> RES');
             session.dialogData.fligthDate = results.response;
 
-            let _date = _opera.fecha(session.dialogData.fligthDate);
+            let _date = _fecha.fecha(session.dialogData.fligthDate);
 
             console.log('FECHA ENTRADA-> ',_date);
 
@@ -166,11 +162,12 @@ module.exports = [(session, args, status) => {
 
                     if(_route.flights) {
                         if (_route.flights.length > 1) {
-                            session.send(msg.status.findFligths);
                             let msg = '';
+                            session.send('Listo, he encontrado mas de un vuelo, sigue abajo todos los estados:');
                             for(let i=0; i < _route.flights.length; i++) {
+                                var d = new Date(_route.flights[i].FechaHoraLlegadaC);
                                 msg = `${msg} 
-    El estado del vuelo: ${_route.flights[i].Vuelo}, es: ${_route.flights[i].Estado}`;
+               El estado para el vuelo: ${_route.flights[i].Vuelo}, es: ${_route.flights[i].Estado}, Hora de confirmación: ${d.toTimeString().slice(0, 5)}`;
                             }
                             session.send(msg);
                         }
@@ -186,27 +183,18 @@ module.exports = [(session, args, status) => {
                 this.sTo = '';
            
         } else if (this.control == 'getNumOrRou') {
-            console.log('!');
+
 
         } else {
-
             session.dialogData.fligthDate = results.response;
             builder.Prompts.text(session, msg.status.getNumOrRou);
         }
     },
-
     (session, results) => {
-
         console.log('Ruta NoDATE/NoRoute-NoNumber RES');
-        session.dialogData.fNumberOrRoute = results.response;
-
-        let _date = _opera.fecha(session.dialogData.fligthDate);
-        //let city = _opera.ciudades(session.dialogData.fNumberOrRoute);
-        
-        //console.log(_date, city.cfrom, city.cto);
-
+        session.dialogData.fligthNumber = results.response;
         // Process request and display reservation details
-        session.send(`a5-> El estado del vuelo No. ${session.dialogData.fligthNumber}, de fecha ${session.dialogData.fligthDate}, es: ${this.fstatus}`);
+        session.send(`El estado del vuelo No. ${session.dialogData.fligthNumber}, de fecha ${session.dialogData.fligthDate}, es: ${this.fstatus}`);
         session.endDialog();
     }
 ];

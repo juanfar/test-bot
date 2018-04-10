@@ -3,8 +3,8 @@
     "getDate": "Claro, para ayudarte necesito saber la fecha del vuelo (ej: Enero 1)",
     "getNumOrRou": "Por favor digite numero del vuelo o ruta",
     "noService" : "El sistema esta temporalmente fuera de servicio",
-    "noNumber" : "Lo siento no encotramos ese numero de vuelo para esa fecha",
-    "noRoute" : "Lo sentimos, no encontramos vuelos para esta ruta y fecha",
+    "noNumber" : "Lo siento, no encuentro ese numero de vuelo para esa fecha",
+    "noRoute" : "Lo siento, no encuentro vuelos para esta ruta y fecha",
     "findFligths" : "Listo, he encontrado mas de un vuelo para esta ruta y fecha, este es el listado:",
     "allInfo": "El estado del vuelo No. ${messages.sNumber ?`${messages.sNumber}`:`123`} de fecha ${messages.sDate} con ruta ${messages.sFrom} -  ${messages.sTo}, es: ${messages.fstatus}"
   }
