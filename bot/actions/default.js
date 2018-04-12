@@ -4,7 +4,7 @@ var builder = require('botbuilder');
 var msg = require('../msg.json');
 var byRoute = require('../../servicios/flightStatusByRoute.js');
 var byNumber = require('../../servicios/flightStatusByNumber.js');
-var fStatus = require('./fligthStatus.1.js');
+var fStatus = require('./fligthStatus.js');
 var call;
 var _number;
 var _route;
@@ -50,10 +50,7 @@ module.exports = [
                             console.log('ERR', err);
                         })
 
-                        session.conversationData.sDate = null;
-                        session.conversationData.sNumber = null;
-                        session.conversationData.origen = null;
-                        session.conversationData.destino = null;
+                        session.endConversation();
 
             } else if (session.conversationData.origen && session.conversationData.destino) {
                 call = byRoute.api(session.conversationData.sDate, session.conversationData.origen, session.conversationData.destino);
@@ -79,10 +76,7 @@ module.exports = [
                                 console.log('ERR', err);
                             })
 
-                            session.conversationData.sDate = null;
-                            session.conversationData.sNumber = null;
-                            session.conversationData.origen = null;
-                            session.conversationData.destino = null;
+                            session.endConversation();
 
             } else {
 
@@ -104,7 +98,7 @@ module.exports = [
                 
 
             }
-        } 
+        }
 
         else if (session.conversationData.pendiente == 'destino') {
             console.log('destino');
@@ -136,6 +130,8 @@ module.exports = [
                             }, function(err) {
                                 console.log('ERR', err);
                             })
+
+                            session.endConversation();
         }
 
         else if (session.conversationData.pendiente == 'origen') {
@@ -168,6 +164,8 @@ module.exports = [
                             }, function(err) {
                                 console.log('ERR', err);
                             })
+
+                            session.endConversation();
         }
         
        /*  if (session.conversationData.pendiente == 'origen') {

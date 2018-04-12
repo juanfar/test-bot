@@ -5,7 +5,8 @@ A simple Language Understanding (LUIS) bot for the Microsoft Bot Framework.
 var restify = require('restify');
 var builder = require('botbuilder');
 var botbuilder_azure = require("botbuilder-azure");
-var fStatus = require('./bot/actions/fligthStatus.1.js');
+var fStatus = require('./bot/actions/fligthStatus.js');
+var greet = require('./bot/actions/greeting.js')
 var onDefault = require('./bot/actions/default.js');
 
 // Setup Restify Server
@@ -30,14 +31,13 @@ server.post('/api/messages', connector.listen());
 * For samples and documentation, see: https://github.com/Microsoft/BotBuilder-Azure
 * ---------------------------------------------------------------------------------------- */
 
-var tableName = 'botdata';
+var tableName = 'logs';
 var azureTableClient = new botbuilder_azure.AzureTableClient(tableName, process.env['AzureWebJobsStorage']);
 var tableStorage = new botbuilder_azure.AzureBotStorage({ gzipData: false }, azureTableClient);
 
 // Create your bot with a function to receive messages from the user
 // This default message handler is invoked if the user's utterance doesn't
 // match any intents handled by other dialogs.
-
 
 var bot = new builder.UniversalBot(connector, { persistConversationData: true });
 
@@ -58,45 +58,8 @@ bot.recognizer(recognizer);
 // See https://docs.microsoft.com/en-us/bot-framework/nodejs/bot-builder-nodejs-recognize-intent-luis
 
 
-/* // Create a custom prompt
-var prompt = new builder.Prompt({ defaultRetryPrompt: "I'm sorry. I didn't recognize your search." })
-    .onRecognize(function (context, callback) {
-        // Call prompts recognizer
-        recognizer.recognize(context, function (err, result) {
-            // If the intent returned isn't the 'None' intent return it
-            // as the prompts response.
-            if (result && result.intent !== 'None') {
-                callback(null, result.score, result);
-            } else {
-                callback(null, 0.0);
-            }
-        });
-    });
 
-
-bot.dialog('myLuisPrompt', prompt);
-
-
-builder.Prompts.myLuisPrompt = function (session, prompt, options) {
-    var args = options || {};
-    args.prompt = prompt || options.prompt;
-    session.beginDialog('myLuisPrompt', args);
-} */
-
-
-bot.dialog('GreetingDialog',
-    (session, args) => {
-
-        console.log('Greeting origen ->',  session.conversationData.origen);
-        console.log('Greeting destino ->',  session.conversationData.destino);
-        console.log('Greeting args', args);
-
-
-        session.send('You reached the Greeting intent. You said \'%s\'.', session.message.text);
-        session.endDialog();
-
-    }
-).triggerAction({
+bot.dialog('GreetingDialog', greet).triggerAction({
     matches: 'Greeting',
     intentThreshold: 0.9
 })

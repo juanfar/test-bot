@@ -7,6 +7,7 @@
     "noService" : "El sistema esta temporalmente fuera de servicio",
     "noNumber" : "Lo siento, no encuentro ese numero de vuelo para esa fecha",
     "noRoute" : "Lo siento, no encuentro vuelos para esta ruta y fecha",
+    "despedida": "Ha sido un gusto atenderlo",
     "findFligths" : "Listo, he encontrado mas de un vuelo para esta ruta y fecha, este es el listado:",
     "allInfo": "El estado del vuelo No. ${messages.sNumber ?`${messages.sNumber}`:`123`} de fecha ${messages.sDate} con ruta ${messages.sFrom} -  ${messages.sTo}, es: ${messages.fstatus}"
   }
