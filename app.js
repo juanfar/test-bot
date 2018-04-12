@@ -4,7 +4,7 @@ A simple Language Understanding (LUIS) bot for the Microsoft Bot Framework.
 
 var restify = require('restify');
 var builder = require('botbuilder');
-var botbuilder_azure = require("botbuilder-azure");
+//var botbuilder_azure = require("botbuilder-azure");
 var fStatus = require('./bot/actions/fligthStatus.1.js');
 var onDefault = require('./bot/actions/default.js');
 
@@ -30,9 +30,9 @@ server.post('/api/messages', connector.listen());
 * For samples and documentation, see: https://github.com/Microsoft/BotBuilder-Azure
 * ---------------------------------------------------------------------------------------- */
 
-var tableName = 'botdata';
+/* var tableName = 'botdata';
 var azureTableClient = new botbuilder_azure.AzureTableClient(tableName, process.env['AzureWebJobsStorage']);
-var tableStorage = new botbuilder_azure.AzureBotStorage({ gzipData: false }, azureTableClient);
+var tableStorage = new botbuilder_azure.AzureBotStorage({ gzipData: false }, azureTableClient); */
 
 // Create your bot with a function to receive messages from the user
 // This default message handler is invoked if the user's utterance doesn't
@@ -41,7 +41,7 @@ var tableStorage = new botbuilder_azure.AzureBotStorage({ gzipData: false }, azu
 
 var bot = new builder.UniversalBot(connector, { persistConversationData: true });
 
-bot.set('storage', tableStorage);
+//bot.set('storage', tableStorage);
 
 // Make sure you add code to validate these fields
 var luisAppId = process.env.LuisAppId;
@@ -102,12 +102,9 @@ bot.dialog('GreetingDialog',
 })
 
 
-
 bot.dialog('FligthStatusDialog', fStatus).triggerAction({
     matches: 'FligthStatus'
 })
-
-
 
 
 bot.dialog('onDefault', onDefault).triggerAction({

@@ -19,13 +19,6 @@ module.exports = [
         let sNumber = builder.EntityRecognizer.findEntity(args.intent.entities, 'builtin.number');
         if (sNumber) session.conversationData.sNumber = sNumber.resolution.value;
 
-        let sFrom = builder.EntityRecognizer.findAllEntities(args.intent.entities, 'Ciudades');
-        console.log('sFrom***', sFrom[0]);
-        //if(sFrom) session.conversationData.origen = sFrom[0].resolution.values[0];
-
-        let sTo = builder.EntityRecognizer.findAllEntities(args.intent.entities, 'Ciudades');
-        console.log('sTo***', sTo);
-        //if(sto) session.conversationData.destino = sTo[1].resolution.values[0];
 
         console.log(session.conversationData.sDate);
         console.log(session.conversationData.sNumber);
@@ -92,12 +85,35 @@ module.exports = [
                             session.conversationData.destino = null;
 
             } else {
+
                 session.endDialog(msg.status.getNumOrRou);
+
+                session.conversationData.pendiente == 'fecha'
+                
+                try {
+                    let sTo = args.intent.entities[1].resolution.values[0];
+                    console.log('sFrom***', sTo);
+                    if(sTo) session.conversationData.origen = sTo;
+
+                    let sFrom = args.intent.entities[0].resolution.values[0];
+                    console.log('sFrom***', sFrom);
+                    if(sFrom) session.conversationData.origen = sFrom;
+                } catch(err) {
+                    session.endDialog('lo siento');
+                }
+                
+
             }
         } 
 
         else if (session.conversationData.pendiente == 'destino') {
             console.log('destino');
+
+            let sTo = args.intent.entities[1].resolution.values[0];
+            console.log('sFrom***', sTo);
+            if(sTo) session.conversationData.origen = sTo;
+
+
             call = byRoute.api(session.conversationData.sDate, session.conversationData.origen, session.conversationData.destino);
 
                             call.then(function(result) {
@@ -123,7 +139,12 @@ module.exports = [
         }
 
         else if (session.conversationData.pendiente == 'origen') {
+
             console.log('origen');
+
+            let sFrom = args.intent.entities[0].resolution.values[0];
+                console.log('sFrom***', sFrom);
+                if(sFrom) session.conversationData.origen = sFrom;
 
             call = byRoute.api(session.conversationData.sDate, session.conversationData.origen, session.conversationData.destino);
 
