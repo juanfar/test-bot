@@ -1,6 +1,8 @@
 {
   "status": {
-    "getDate": "Claro, para ayudarte necesito saber la fecha del vuelo (ej: Enero 1)",
+    "getDate": "Con gusto, para ayudarte necesito saber la fecha del vuelo",
+    "getFrom": "Con gusto, para ayudarte necesito saber el origen del vuelo",
+    "getTo": "Con gusto, para ayudarte necesito saber el destino del vuelo",
     "getNumOrRou": "Por favor digite numero del vuelo o ruta",
     "noService" : "El sistema esta temporalmente fuera de servicio",
     "noNumber" : "Lo siento, no encuentro ese numero de vuelo para esa fecha",
