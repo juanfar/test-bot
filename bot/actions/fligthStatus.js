@@ -1,7 +1,6 @@
 'use strict'
 
 var builder = require('botbuilder');
-var winston = require('winston');
 var msg = require('../msg.json');
 var byRoute = require('../../servicios/flightStatusByRoute.js');
 var byNumber = require('../../servicios/flightStatusByNumber.js');
@@ -36,7 +35,9 @@ module.exports = [
         let cityCode = builder.EntityRecognizer.findAllEntities(args.intent.entities, 'Ciudades');
         session.conversationData.control = '';
 
-        logger.log('debug', sNumber);
+        logger.log('debug', session.conversationData.sNumber);
+        session.userData.userName = "Kumar Sarma";
+        session.save();
 
        try {
             for (let i = 0; i < compositeEntities.length; i++) {

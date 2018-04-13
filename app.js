@@ -4,7 +4,7 @@ A simple Language Understanding (LUIS) bot for the Microsoft Bot Framework.
 
 var restify = require('restify');
 var builder = require('botbuilder');
-var botbuilder_azure = require("botbuilder-azure");
+var azure = require('botbuilder-azure'); 
 var fStatus = require('./bot/actions/fligthStatus.js');
 var greet = require('./bot/actions/greeting.js')
 var onDefault = require('./bot/actions/default.js');
@@ -31,9 +31,12 @@ server.post('/api/messages', connector.listen());
 * For samples and documentation, see: https://github.com/Microsoft/BotBuilder-Azure
 * ---------------------------------------------------------------------------------------- */
 
-var tableName = 'logs';
-var azureTableClient = new botbuilder_azure.AzureTableClient(tableName, process.env['AzureWebJobsStorage']);
-var tableStorage = new botbuilder_azure.AzureBotStorage({ gzipData: false }, azureTableClient);
+var tableName = "logs"; // You define
+var storageName = "avibotarchcontext"; // Obtain from Azure Portal
+var storageKey = "sYH53B4BkiiAxmts9sZq9UJT+foKwA6P6VxOOjH7Eo28tGcQTm50kDpCs7rgclv3AozMTFuSsAAmRCuAuQ0yQA=="; // Obtain from Azure Portal
+
+var azureTableClient = new azure.AzureTableClient(tableName, storageName, storageKey);
+var tableStorage = new azure.AzureBotStorage({gzipData: false}, azureTableClient);
 
 // Create your bot with a function to receive messages from the user
 // This default message handler is invoked if the user's utterance doesn't
