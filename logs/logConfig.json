@@ -1,13 +1,10 @@
 {
-   "type": {
-       "audit": {
-           "url": "https://avapiacceturedesa.azure-api.net/common/v1/audit"
-       },
-       "log": {
-            "url": "https://avapiacceturedesa.azure-api.net/common/v1/log",
-            "levels": {
-                
-            }
-       }
-   }
+    "level": {
+        "debug": {
+            "type": "Azure"
+        },
+        "info": {
+            "type": "backend"
+        }
+    }
 }

@@ -6,7 +6,7 @@ var restify = require('restify');
 var builder = require('botbuilder');
 var azure = require('botbuilder-azure'); 
 var fStatus = require('./bot/actions/fligthStatus.js');
-var greet = require('./bot/actions/greeting.js')
+var greet = require('./bot/actions/greeting.js');
 var onDefault = require('./bot/actions/default.js');
 
 // Setup Restify Server

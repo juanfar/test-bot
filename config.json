@@ -1,0 +1,7 @@
+{
+    "logs": {
+        "url": "https://avapiacceturedesa.azure-api.net/common/v1/log",
+        "method": "POST",
+        "type": "openId"
+    }
+}
