@@ -3,5 +3,10 @@
         "url": "https://avapiacceturedesa.azure-api.net/common/v1/log",
         "method": "POST",
         "type": "openId"
+    },
+    "auth": {
+        "url": "https://avcoldigitalapimgmtqa.azure-api.net/api/v1/authentication/login",
+        "method": "POST",
+        "type": ""
     }
 }
