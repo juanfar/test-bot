@@ -117,7 +117,7 @@ module.exports = [
                                 if(_route.flights) {
                                     if (_route.flights.length > 1) {
                                         let msg = '';
-                                        session.send('Listo, he encontrado mas de un vuelo, sigue abajo todos los estados:');
+                                        session.send(msg.status.findFligths);
                                         for(let i=0; i < _route.flights.length; i++) {
                                             var d = new Date(_route.flights[i].FechaHoraLlegadaC);
                                             msg = `${msg}  <br/> El estado para el vuelo: ${_route.flights[i].Vuelo}, es: ${_route.flights[i].Estado}, Hora de confirmación: ${d.toTimeString().slice(0, 5)}`;
@@ -151,7 +151,7 @@ module.exports = [
                                 if(_route.flights) {
                                     if (_route.flights.length > 1) {
                                         let msg = '';
-                                        session.send('Listo, he encontrado mas de un vuelo, sigue abajo todos los estados:');
+                                        session.send(msg.status.findFligths);
                                         for(let i=0; i < _route.flights.length; i++) {
                                             var d = new Date(_route.flights[i].FechaHoraLlegadaC);
                                             msg = `${msg}  <br/> El estado para el vuelo: ${_route.flights[i].Vuelo}, es: ${_route.flights[i].Estado}, Hora de confirmación: ${d.toTimeString().slice(0, 5)}`;
@@ -170,6 +170,4 @@ module.exports = [
 
 
     }
-
-    
 ]

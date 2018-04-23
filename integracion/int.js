@@ -2,15 +2,9 @@
 
 const config = require('../config.json');
 
-const _sendLogInfo = function (url, headers, body) {
+const _sendLogInfo = function (options) {
 
     const request = require('request');
-    const options = {  
-            url: url,
-            method: config.logs.method,
-            headers: headers,
-            body: JSON.stringify(body)
-    };
 
     return new Promise(function(resolve, reject) {
     	// Do async job
@@ -20,6 +14,47 @@ const _sendLogInfo = function (url, headers, body) {
             } else {
                 resolve(body);
                 console.log('response->', resp.statusCode, '', resp.statusMessage);
+            }
+        })
+    })
+}
+
+const _sendAuthInfo = function (url, headers, body) {
+
+    const request = require('request');
+    const options = {  
+            url: url,
+            method: config.logs.method,
+            headers: headers,
+            body: JSON.stringify(body)
+    };
+
+    /* return new Promise(function(resolve, reject) {
+    	// Do async job
+        request.post(options, function(err, resp, body) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(body);
+                console.log('response->', resp.statusCode, '', resp.statusMessage);
+            }
+        })
+    }) */
+}
+
+const _apiService = function (options) {
+
+    const request = require('request');
+
+    return new Promise(function(resolve, reject) {
+    	// Do async job
+        request.get(options, function(err, resp, body) {
+            if (err) {
+                reject(err);
+            } else {
+                //resolve(body);
+                resolve(JSON.parse(body));
+                //console.log('response->', resp.statusCode, '', resp.statusMessage);
             }
         })
     })
@@ -59,5 +94,7 @@ var createUUID = function () {
 }
 
 module.exports = {
-    logInfo: _sendLogInfo
+    sendLogInfo: _sendLogInfo,
+    authCall: _sendAuthInfo,
+    apiService: _apiService
 }

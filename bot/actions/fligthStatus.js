@@ -4,6 +4,7 @@ var builder = require('botbuilder');
 var msg = require('../msg.json');
 var byRoute = require('../../servicios/flightStatusByRoute.js');
 var byNumber = require('../../servicios/flightStatusByNumber.js');
+var fsService = require('../../servicios/flightStatus.Service.js');
 var logger = require('../../logs/logger.js');
 var call;
 var _number;
@@ -32,9 +33,9 @@ module.exports = [
         session.conversationData.control = '';
 
         logger.info('info', 'esta es una prueba con info', 'flightStatus');
-        logger.debug('debug', 'esta es una prueba con debug', 'flightStatus');
+        //logger.debug('debug', 'esta es una prueba con debug', 'flightStatus');
 
-       try {
+        try {
             for (let i = 0; i < compositeEntities.length; i++) {
                 if (compositeEntities[i].children[0].type == undefined) {
                     compositeEntities[i].children[0] = {'type': null};
@@ -82,7 +83,11 @@ module.exports = [
                 logger.info('info', 'Ruta DATE/NUMBER', 'flightStatus');
                 logger.debug('debug', `Ruta DATE/NUMBER -> Fecha:${session.conversationData.sDate} -> Numero:${session.conversationData.sNumber}`, 'flightStatus');
 
+                /* call = fsService.byNumber(session.conversationData.sDate, session.conversationData.sNumber);
+                console.log(call); */
+
                 call = byNumber.api(session.conversationData.sDate, session.conversationData.sNumber);
+
                 call.then(function(result) {
                     _number = result;
                     console.log("Initialized _number");
@@ -102,7 +107,7 @@ module.exports = [
 
             else if(session.conversationData.origen && session.conversationData.destino) {
                 logger.info('info', 'flujo DATE/FROMandTO', 'flightStatus');
-                logger.debug('debug', `flujo DATE/FROMandTO -> Fecha:${session.conversationData.sDate} -> Origen:${session.conversationData.origen} -> Destino:${session.conversationData.destino}`, 'flightStatus');
+                logger.debug('debug', `flujo DATE/FROMandTO`, `Fecha: ${session.conversationData.sDate} -> Origen:${session.conversationData.origen} -> Destino:${session.conversationData.destino}`, 'flightStatus');
 
                 call = byRoute.api(session.conversationData.sDate, session.conversationData.origen, session.conversationData.destino);
 
@@ -113,10 +118,10 @@ module.exports = [
                     if(_route.flights) {
                         if (_route.flights.length > 1) {
                             let msg = '';
-                            session.send('Listo, he encontrado mas de un vuelo, sigue abajo todos los estados:');
+                            session.send(msg.status.findFligths);
                             for(let i=0; i < _route.flights.length; i++) {
                                 var d = new Date(_route.flights[i].FechaHoraLlegadaC);
-                                msg = `${msg}  <br/> El estado para el vuelo: ${_route.flights[i].Vuelo}, es: ${_route.flights[i].Estado}, Hora de confirmación:{d.toTimeString().slice(0, 5)}`;
+                                msg = `${msg}  <br/> El estado para el vuelo: ${_route.flights[i].Vuelo}, es: ${_route.flights[i].Estado}, Hora de confirmación: ${d.toTimeString().slice(0, 5)}`;
                             }
                             session.send(msg);
                         }

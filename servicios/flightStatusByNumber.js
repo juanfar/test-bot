@@ -34,3 +34,4 @@ const callApi = function (date, number) {
 module.exports = {
     api: callApi
 }
+

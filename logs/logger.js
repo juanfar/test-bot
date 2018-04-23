@@ -11,23 +11,29 @@ var logger = exports;
   logger.info = function(level, message, operation) {
     
     let timeS = new Date().toJSON().toString();
-    let url = config.logs.url;
 
     let headers = {
       "x-correlation-id": "UUID",
       "x-channel": "BOT",
       "Ocp-Apim-Trace" : true,
       "Ocp-Apim-Subscription-Key": "c3e7baf5ccb1422986d4b1d5ef617f4f"
-    }
+    };
 
     let body = {
       "timestamp": timeS,
       "level": level,
       "message": message,
       "operation": operation
-    }
+    };
 
-    let sendInfo = int.logInfo(url, headers, body);
+    let options = {  
+      url: config.logs.url,
+      method: config.logs.method,
+      headers: headers,
+      body: JSON.stringify(body)
+    };
+
+    let sendInfo = int.sendLogInfo(options);
 
     sendInfo.then(function(result) {
 
@@ -37,7 +43,7 @@ var logger = exports;
 
   }
 
-  logger.debug = function(level, message, sce, operation) {
+  logger.debug = function(level, sce, message, operation) {
 
     let timeS = new Date().toJSON().toString();
     let tableSvc = azure.createTableService('avibotarchcontext', 'sYH53B4BkiiAxmts9sZq9UJT+foKwA6P6VxOOjH7Eo28tGcQTm50kDpCs7rgclv3AozMTFuSsAAmRCuAuQ0yQA==');
@@ -64,5 +70,5 @@ var logger = exports;
       }
     });
 
-    console.log(`${level}: ${message}, ${sce}, ${operation}, ${timeS}`);
+    console.log(`${level}: ${sce}, ${message}, ${operation}, ${timeS}`);
   }

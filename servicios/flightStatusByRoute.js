@@ -5,6 +5,7 @@ var callApi = function (date, from, to) {
     let urlA = `https://avapiacceturedesa.azure-api.net/api/integration/v1/flightstatuswithweather?origen=${from}&destino=${to}&fechaViajeDT=${date}`;
 
     const request = require('request');
+    
     const options = {  
             url: urlA,
             method: 'GET',
