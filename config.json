@@ -5,7 +5,7 @@
         "tableName": "logs"
     },
     "luis": {
-        "url": "https://avapiacceturedesa.azure-api.net/common/v1/log"
+        "url": "https://eastus.api.cognitive.microsoft.com/luis/v2.0/apps/64f40c86-c107-4029-b252-d55babae9310?subscription-key=56501f9ed4df464aa7df835ae26c1d13&verbose=true&timezoneOffset=0&q="
     },
     "logs": {
         "url": "https://avapiacceturedesa.azure-api.net/common/v1/log",

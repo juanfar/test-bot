@@ -19,27 +19,25 @@ var config = require('./config.json');
 var server = restify.createServer();
 server.use(restify.plugins.bodyParser());
 
+server.listen(process.env.port || process.env.PORT || 3978, function () {
+    console.log('%s listening to %s', server.name, server.url); 
+ });
+
 server.get('/login', restify.plugins.serveStatic({
 	'directory': __dirname,
     'default': 'index.html'
 }))
 
-
-server.listen(process.env.port || process.env.PORT || 3978, function () {
-   console.log('%s listening to %s', server.name, server.url); 
-});
   
 // Create chat connector for communicating with the Bot Framework Service
 var connector = new builder.ChatConnector({
-    appId: null,
-    appPassword: null,
+    appId: process.env.MicrosoftAppId,
+    appPassword: process.env.MicrosoftAppPassword,
     openIdMetadata: process.env.BotOpenIdMetadata 
 });
 
 // Listen for messages from users 
 server.post('/api/messages', connector.listen());
-
-
 
 var tableName = config.azure.tableName; // You define
 var storageName = config.azure.storageName; // Obtain from Azure Portal
@@ -72,7 +70,7 @@ bot.recognizer(recognizer);
 
 bot.dialog('GreetingDialog', greet).triggerAction({
     matches: 'Greeting',
-    intentThreshold: 0.9
+    intentThreshold: 0.8
 })
 
 bot.dialog('FligthStatusDialog', fStatus).triggerAction({
@@ -84,7 +82,7 @@ bot.dialog('onDefault', onDefault).triggerAction({
     intentThreshold: 0.1
 })
   
-bot.dialog('signin', signin).triggerAction({
+/* bot.dialog('signin', signin).triggerAction({
     matches: 'signIn'
-}) 
+}) */ 
 

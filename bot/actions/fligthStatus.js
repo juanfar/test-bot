@@ -5,7 +5,6 @@ var msg = require('../../mensajes/msg.json');
 var cMsg = require('../../mensajes/msg.js');
 var byRoute = require('../../servicios/flightStatusByRoute.js');
 var byNumber = require('../../servicios/flightStatusByNumber.js');
-var fsService = require('../../servicios/flightStatus.Service.js');
 var logger = require('../../logs/logger.js');
 var call;
 var _number;
