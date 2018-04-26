@@ -14,5 +14,4 @@
     "findFligths" : "Listo, he encontrado mas de un vuelo, sigue abajo todos los estados",
     "allInfo": "El estado para el vuelo: #vuelo#, es:  #estado#, Hora de confirmación: #hora#"
   }
-  
 }

@@ -6,7 +6,6 @@ var cMsg = require('../../mensajes/msg.js');
 var byRoute = require('../../servicios/flightStatusByRoute.js');
 var byNumber = require('../../servicios/flightStatusByNumber.js');
 var fStatus = require('./fligthStatus.js');
-var logger = require('../../logs/logger.js');
 var call;
 var _number;
 var _route;
@@ -156,8 +155,7 @@ module.exports = [
                             })
 
                             session.endConversation();
-        }
-
+        }     
 
     }
 ]
