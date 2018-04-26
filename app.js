@@ -4,10 +4,15 @@ A simple Language Understanding (LUIS) bot for the Microsoft Bot Framework.
 
 var restify = require('restify');
 var builder = require('botbuilder');
+
+// Intents
 var azure = require('botbuilder-azure'); 
 var fStatus = require('./bot/actions/fligthStatus.js');
 var greet = require('./bot/actions/greeting.js');
 var onDefault = require('./bot/actions/default.js');
+
+// config
+var config = require('./config.json');
 
 // Setup Restify Server
 var server = restify.createServer();
@@ -31,9 +36,9 @@ server.post('/api/messages', connector.listen());
 * For samples and documentation, see: https://github.com/Microsoft/BotBuilder-Azure
 * ---------------------------------------------------------------------------------------- */
 
-var tableName = "logs"; // You define
-var storageName = "avibotarchcontext"; // Obtain from Azure Portal
-var storageKey = "sYH53B4BkiiAxmts9sZq9UJT+foKwA6P6VxOOjH7Eo28tGcQTm50kDpCs7rgclv3AozMTFuSsAAmRCuAuQ0yQA=="; // Obtain from Azure Portal
+var tableName = config.azure.tableName; // You define
+var storageName = config.azure.storageName; // Obtain from Azure Portal
+var storageKey = config.azure.storageKey; // Obtain from Azure Portal
 
 var azureTableClient = new azure.AzureTableClient(tableName, storageName, storageKey);
 var tableStorage = new azure.AzureBotStorage({gzipData: false}, azureTableClient);
@@ -51,7 +56,7 @@ var luisAppId = process.env.LuisAppId;
 var luisAPIKey = process.env.LuisAPIKey;
 var luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
 
-const LuisModelUrl = 'https://eastus.api.cognitive.microsoft.com/luis/v2.0/apps/64f40c86-c107-4029-b252-d55babae9310?subscription-key=56501f9ed4df464aa7df835ae26c1d13&verbose=true&timezoneOffset=0&q=';
+const LuisModelUrl = config.luis.url;
 
 // Create a recognizer that gets intents from LUIS, and add it to the bot
 var recognizer = new builder.LuisRecognizer(LuisModelUrl);

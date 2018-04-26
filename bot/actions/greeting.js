@@ -1,11 +1,13 @@
 'use strict'
 
+var msg = require('../../mensajes/msg.json');
+
 var builder = require('botbuilder');
 
 module.exports = [
 
     (session, args) => {
-        session.send('¿Hola, en que puedo ayudarte?');
+        session.send(msg.greeting.greet);
     }
 
 ]

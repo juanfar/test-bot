@@ -1,4 +1,12 @@
 {
+    "azure": {
+        "storageName": "avibotarchcontext",
+        "storageKey": "sYH53B4BkiiAxmts9sZq9UJT+foKwA6P6VxOOjH7Eo28tGcQTm50kDpCs7rgclv3AozMTFuSsAAmRCuAuQ0yQA==",
+        "tableName": "logs"
+    },
+    "luis": {
+        "url": "https://avapiacceturedesa.azure-api.net/common/v1/log"
+    },
     "logs": {
         "url": "https://avapiacceturedesa.azure-api.net/common/v1/log",
         "method": "POST",

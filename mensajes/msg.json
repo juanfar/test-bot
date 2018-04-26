@@ -1,4 +1,7 @@
 {
+  "greeting": {
+    "greet": "¿Hola, en que puedo ayudarte?"
+  },
   "status": {
     "getDate": "Con gusto, para ayudarte necesito saber la fecha del vuelo",
     "getFrom": "Con gusto, para ayudarte necesito saber el origen del vuelo",
@@ -9,6 +12,7 @@
     "noRoute" : "Lo siento, no encuentro vuelos para esta ruta y fecha",
     "despedida": "Ha sido un gusto atenderlo",
     "findFligths" : "Listo, he encontrado mas de un vuelo, sigue abajo todos los estados",
-    "allInfo": "El estado del vuelo No. ${messages.sNumber ?`${messages.sNumber}`:`123`} de fecha ${messages.sDate} con ruta ${messages.sFrom} -  ${messages.sTo}, es: ${messages.fstatus}"
+    "allInfo": "El estado para el vuelo: #vuelo#, es:  #estado#, Hora de confirmación: #hora#"
   }
+  
 }

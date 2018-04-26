@@ -1,7 +1,8 @@
 'use strict'
 
 var builder = require('botbuilder');
-var msg = require('../msg.json');
+var msg = require('../../mensajes/msg.json');
+var cMsg = require('../../mensajes/msg.js');
 var byRoute = require('../../servicios/flightStatusByRoute.js');
 var byNumber = require('../../servicios/flightStatusByNumber.js');
 var fStatus = require('./fligthStatus.js');
@@ -35,7 +36,8 @@ module.exports = [
                             console.log("Initialized _number");
 
                             if(_number.flights) {
-                                session.send(`El estado del vuelo ${_number.flights[0].Vuelo}, es: ${_number.flights[0].Estado}`);
+                                let message = cMsg.msgNumber(_number.flights);
+                                session.send(message);
                             } else {
                                 session.send(msg.status.noNumber);
                             }
@@ -58,13 +60,9 @@ module.exports = [
 
                                 if(_route.flights) {
                                     if (_route.flights.length > 1) {
-                                        let msg = '';
-                                        session.send('Listo, he encontrado mas de un vuelo, sigue abajo todos los estados:');
-                                        for(let i=0; i < _route.flights.length; i++) {
-                                            var d = new Date(_route.flights[i].FechaHoraLlegadaC);
-                                            msg = `${msg}  <br/> El estado para el vuelo: ${_route.flights[i].Vuelo}, es: ${_route.flights[i].Estado}, Hora de confirmación: ${d.toTimeString().slice(0, 5)}`;
-                                        }
-                                        session.send(msg);
+                                        session.send(msg.status.findFligths);
+                                        let message = cMsg.msgRoute(_route.flights);
+                                        session.send(message);
                                     }
                                 } else session.send(msg.status.noRoute);
                                 
@@ -116,13 +114,9 @@ module.exports = [
 
                                 if(_route.flights) {
                                     if (_route.flights.length > 1) {
-                                        let msg = '';
                                         session.send(msg.status.findFligths);
-                                        for(let i=0; i < _route.flights.length; i++) {
-                                            var d = new Date(_route.flights[i].FechaHoraLlegadaC);
-                                            msg = `${msg}  <br/> El estado para el vuelo: ${_route.flights[i].Vuelo}, es: ${_route.flights[i].Estado}, Hora de confirmación: ${d.toTimeString().slice(0, 5)}`;
-                                        }
-                                        session.send(msg);
+                                        let message = cMsg.msgRoute(_route.flights);
+                                        session.send(message);
                                     }
                                 } else session.send(msg.status.noRoute);
                                 
@@ -150,13 +144,9 @@ module.exports = [
 
                                 if(_route.flights) {
                                     if (_route.flights.length > 1) {
-                                        let msg = '';
                                         session.send(msg.status.findFligths);
-                                        for(let i=0; i < _route.flights.length; i++) {
-                                            var d = new Date(_route.flights[i].FechaHoraLlegadaC);
-                                            msg = `${msg}  <br/> El estado para el vuelo: ${_route.flights[i].Vuelo}, es: ${_route.flights[i].Estado}, Hora de confirmación: ${d.toTimeString().slice(0, 5)}`;
-                                        }
-                                        session.send(msg);
+                                        let message = cMsg.msgRoute(_route.flights);
+                                        session.send(message);
                                     }
                                 } else session.send(msg.status.noRoute);
                                 
