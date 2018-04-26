@@ -15,19 +15,29 @@ var onDefault = require('./bot/actions/default.js');
 var server = restify.createServer();
 server.use(restify.plugins.bodyParser());
 
-server.get('/login', restify.plugins.serveStatic({
-	'directory': './login',
-	'default': 'index.html'
-}));
 
-
-server.post('/', function (req, res) {
+/* server.post('/login', function (req, res) {
   this.user = req.body.usuario;
-  console.log('user', req.body.usuario);
+  console.log('user:', req.body.usuario);
+  console.log('password:', req.body.password);
   res.send(200, JSON.stringify(req.body));
-});
+}); */
 
-console.log(this.user);
+/* server.get('/login', (req, res) => {
+    var body = '<html><body>hello</body></html>';
+    res.writeHead(200, {
+    'Content-Length': Buffer.byteLength(body),
+    'Content-Type': 'text/html'
+    });
+    res.write(body);
+    res.end();
+}); */
+
+server.get('/login', restify.plugins.serveStatic({
+	'directory': __dirname,
+    'default': 'index.html'
+}))
+
 
 server.listen(process.env.port || process.env.PORT || 3978, function () {
    console.log('%s listening to %s', server.name, server.url); 
