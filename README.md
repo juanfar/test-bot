@@ -1,66 +1,148 @@
-# test-bot
+# Achitecture
 
-App Bot Framework, Node JS y LUIS
+Guia de uso de componentes del botframework
 
-## Folders 
+## Crear Proyecto Bot Framework
 
-Esta es una guia del desarrollo del bot, donde se explica su estructura y funcionamiento.
+Crear un Bot con [Bot Framework](https://docs.microsoft.com/en-us/azure/bot-service/nodejs/bot-builder-nodejs-quickstart)
 
-### Prerequisitos
-
-Instalar de Node.js, npm
-
-```
-Node.js y NPM -> https://www.npmjs.com/get-npm?utm_source=house&utm_medium=homepage&utm_campaign=free%20orgs&utm_term=Install%20npm
-```
-
-## Estructura del Proyecto
+## Componentes 
     .
     ├── ...
     ├── bot                     
-    │   ├── actions
-    |   |     ├── default.js        
-    │   |     |── fligthStatus.js   
-    |   |     └── greeting.js       
-    │   |── msg.json 
-    │   └── msg.js              
+    │   └── actions
     │         
-    ├── config                  
-    │   └── config.js           
+    ├── context                  
     |
-    ├── context                 
-    │   └── context.js                
+    ├── integración                 
     |
-    ├── integracion                    
-    │   └── int.js               
+    ├── login                    
     |
     ├── logs                    
-    │   ├── logConfig.json         
-    │   └── logger.js                
-    |
+    |   
     ├── servicios                    
-    │   ├── flightStatusByNumber.js
-    │   ├── flightStatusByRoute.js
-    │   └── servicios.config.json
-    |
-    |── app.js
-    |── config.json
-    |── package.json
     └── ...
 
-### Intenciones y Dialogos
-Todas las intenciones de Luis, se encuentran en la carpeta `bot/actions`, aqui encontramos los dialogos y la logica de su flujo.
-    
-### conexiones y APIS
-Las conexiones a la API de fligthStatus, se realizan haciendo un llamado desde `bot/actions/fligthStatus.js` y `bot/actions/default.js` en los dialogos que se requiera al modulo de servicios `servicios/flightStatusByNumber.js` y `servicios/flightStatusByRoute.js` segun sea el caso.
+### Agregar dialogo de intención
+
+Para agregar un dialogo de intención se debe crear un archivo con el nombre de la intención y con extensión `.js` en la carpeta de actions. En este módulo se debe importar el builder de Bot Framework `var builder = require('botbuilder')`. Adicionalmente exportar el modulo que contiene un array con las funciones necesarias para la logica del flujo. Ejemplo:
+
+`greetings.js`
+
+```
+var builder = require('botbuilder')
+
+
+module.exports = [
+
+    (session, args) => {
+        session.send('Hola en que puedo ayudarte');
+    }
+
+]
+```
+
+Ahora, en `app.js` se debe importar el módulo `greetings.js` y crear un dialogo al que correspondera la lógica de este módulo. Ejemplo: 
+
+```
+var greet = require('./bot/actions/greeting.js');
+
+
+bot.dialog('GreetingDialog', greet).triggerAction({
+    matches: 'Greeting',
+    intentThreshold: 0.9
+})
+
+]
+
+```
+
+### Módulo de integración
+
+El módulo de integración `integracion/int.js`, permite hacer la conexión con las APIs externas que seran usadas por el bot, se debe exportar una función en la que como parametro deben entrar las opciones del request de la API. Ejemplo:
+
+```
+const _sendLogInfo = function (options) {
+
+    const request = require('request');
+
+    return new Promise(function(resolve, reject) {
+    	// Do async job
+        request.post(options, function(err, resp, body) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(body);
+            }
+        })
+    })
+}
+```
+
+### Módulo de Autenticación
+
+El módulo de Autenticación `login/index.html`, contiene un formulario html que obtiene los datos 'usuario' y 'password', estos datos son enviados como parametro al servicio de login de Avianca, el cual devuelve un token, que posteriormente sera incluido como parametro del body para hacer post request Table Service Rest API de Azure Storage y asi almacenar el token en la tabla `botdata`. ejemplo:
+
 
 ### Logs
-Para el envio de logs se hace un llamado desde el lugar requerido en los dialogos `bot/actions/fligthStatus.js` y `bot/actions/default.js` al modulo `logs/logger.js` que a su vez hace llamado al modulo de la API de integración `integracion/int.js` para conectar la API.
 
-### Archivos de configuración
-En `bot/msg.js` y `bot/msg.json` se encuentran los strings de mensajes que el bot responde al usuario para cada caso.
+modulo: `logs/logger.js`
 
-El archivo `config.json` contiene las configuraciones generales de los modulos.
 
-El archivo `app.js` contiene el la estructura general de la conversación, haciendo un llamado a los dialogos necesarios, tambien se crea el servidor y las conexiones con el mismo y conexiones con azure y LUIS.
+Ejemplo de request:
 
+```
+var int = require('../integracion/int.js'); // importación al modulo de integración
+var config = require('../config.json');
+
+logger.info = function(level, message, operation) {
+    
+    let timeS = new Date().toJSON().toString();
+
+    let headers = {
+      "x-correlation-id": "",
+      "x-channel": "",
+      "Ocp-Apim-Trace" : "",
+      "Ocp-Apim-Subscription-Key": ""
+    };
+
+    let body = {
+      "timestamp": timeS,
+      "level": level,
+      "message": message,
+      "operation": operation
+    };
+
+    let options = {  
+      url: config.logs.url,
+      method: config.logs.method,
+      headers: headers,
+      body: JSON.stringify(body)
+    };
+
+    // envio parametros al modulo de integracion
+    let sendInfo = int.sendLogInfo(options);
+
+    sendInfo.then(function(result) {
+
+      }, function(err) {
+          console.log('ERR', err);
+      })
+
+  }
+
+  ```
+
+ejemplo de uso en `bot/actions/<myIntent>.js`
+
+ ```
+var logger = require('../../logs/logger.js');
+
+
+logger.info('info', 'iniciando dialogo', 'flightStatus');
+
+ ```
+
+### Servicios
+
+Para crear un servicio, se debe crear un archivo con el nombre del servicio con extension `.js`, y allí hacer la conexión y request de las APIS necesarias.
