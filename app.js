@@ -2,18 +2,18 @@
 A simple Language Understanding (LUIS) bot for the Microsoft Bot Framework. 
 -----------------------------------------------------------------------------*/
 
-var restify = require('restify');
-var builder = require('botbuilder');
+var restify = require('restify'); // importar modulo servidor
+var builder = require('botbuilder'); // importar modulo Bot framework
+var azure = require('botbuilder-azure');
 
 // Intents
-var azure = require('botbuilder-azure'); 
-var fStatus = require('./bot/actions/fligthStatus.js');
-var greet = require('./bot/actions/greeting.js');
-var signin = require('./bot/actions/signin.js');
-var onDefault = require('./bot/actions/default.js');
+var fStatus = require('./bot/actions/fligthStatus.js'); // Dialogo consulta fligthStatus
+var greet = require('./bot/actions/greeting.js'); // Dialogo Saludo
+//var signin = require('./bot/actions/signin.js'); // Dialogo autenticacion
+var onDefault = require('./bot/actions/default.js'); // Dialogo none
 
 // config
-var config = require('./config.json');
+var config = require('./config.json'); // importar modulo configuraciones generales
 
 // Setup Restify Server
 var server = restify.createServer();
@@ -23,14 +23,14 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
     console.log('%s listening to %s', server.name, server.url); 
  });
 
-server.get('/login', restify.plugins.serveStatic({
+server.get('/login', restify.plugins.serveStatic({ // ruta para formulario autenticacion
 	'directory': __dirname,
     'default': 'index.html'
 }))
 
   
 // Create chat connector for communicating with the Bot Framework Service
-var connector = new builder.ChatConnector({
+var connector = new builder.ChatConnector({ 
     appId: process.env.MicrosoftAppId,
     appPassword: process.env.MicrosoftAppPassword,
     openIdMetadata: process.env.BotOpenIdMetadata 
@@ -68,21 +68,20 @@ bot.recognizer(recognizer);
 //=========================================================
 
 
-bot.dialog('GreetingDialog', greet).triggerAction({
+bot.dialog('GreetingDialog', greet).triggerAction({ // inicia dialogo saludo
     matches: 'Greeting',
     intentThreshold: 0.8
 })
 
-bot.dialog('FligthStatusDialog', fStatus).triggerAction({
+bot.dialog('FligthStatusDialog', fStatus).triggerAction({ // inicia dialogo FligthStatus
     matches: 'FligthStatus'
 })
 
-bot.dialog('onDefault', onDefault).triggerAction({
+bot.dialog('onDefault', onDefault).triggerAction({ // inicia dialogo None
     matches: 'None',
     intentThreshold: 0.1
 })
   
-/* bot.dialog('signin', signin).triggerAction({
+/* bot.dialog('signin', signin).triggerAction({ // inicia dialogo autenticacion
     matches: 'signIn'
-}) */ 
-
+}) */

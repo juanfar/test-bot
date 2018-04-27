@@ -1,8 +1,7 @@
 'use strict'
 
-var msg = require('../../mensajes/msg.json');
-
-var builder = require('botbuilder');
+var builder = require('botbuilder'); // importar modulo Bot framework
+var msg = require('../../mensajes/msg.json'); // importar modulo de mensajes estaticos
 
 module.exports = [
 

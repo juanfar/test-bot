@@ -1,14 +1,31 @@
 "use strict";
 
-const config = require('../config.json');
+const config = require('../config.json'); // importar modulo configuraciones generales
 
-const _sendLogInfo = function (options) {
+const _sendLogInfo = function (options) { // request a la API de logs
 
     const request = require('request');
 
     return new Promise(function(resolve, reject) {
     	// Do async job
         request.post(options, function(err, resp, body) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(body);
+                console.log('response->', resp.statusCode, '', resp.statusMessage);
+            }
+        })
+    })
+}
+
+const _fstatus = function (options) {
+
+    const request = require('request');
+
+    return new Promise(function(resolve, reject) {
+    	// Do async job
+        request.get(options, function(err, resp, body) {
             if (err) {
                 reject(err);
             } else {
@@ -52,5 +69,6 @@ var createUUID = function () {
 }
 
 module.exports = {
-    sendLogInfo: _sendLogInfo
+    sendLogInfo: _sendLogInfo,
+    fstatus: _fstatus
 }

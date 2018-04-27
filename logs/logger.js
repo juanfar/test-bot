@@ -1,14 +1,14 @@
 'use strict'
 
-var azure = require('azure-storage');
-var int = require('../integracion/int.js');
-var config = require('../config.json');
+var azure = require('azure-storage'); // importar modulo Bot framework
+var int = require('../integracion/int.js'); // importar modulo de integracion
+var config = require('../config.json'); // importar modulo configuraciones generales
 
 var myObject = '';
 
 var logger = exports;
 
-  logger.info = function(level, message, operation) {
+  logger.info = function(level, message, operation) { // funcion que genera log y hace request POST en la API de logs
     
     let timeS = new Date().toJSON().toString();
 
@@ -43,7 +43,7 @@ var logger = exports;
 
   }
 
-  logger.debug = function(level, sce, message, operation) {
+  logger.debug = function(level, sce, message, operation) { // funcion que genera log y hace request POST en azure storage
 
     let timeS = new Date().toJSON().toString();
     let tableSvc = azure.createTableService('avibotarchcontext', 'sYH53B4BkiiAxmts9sZq9UJT+foKwA6P6VxOOjH7Eo28tGcQTm50kDpCs7rgclv3AozMTFuSsAAmRCuAuQ0yQA==');
