@@ -3,20 +3,21 @@
 var azure = require('azure-storage'); // importar modulo Bot framework
 var int = require('../integracion/int.js'); // importar modulo de integracion
 var config = require('../config.json'); // importar modulo configuraciones generales
-
-var myObject = '';
+var logConf = require('./logConfig.json');
 
 var logger = exports;
 
   logger.info = function(level, message, operation) { // funcion que genera log y hace request POST en la API de logs
-    
+
+    let uuid = int.uuid();
     let timeS = new Date().toJSON().toString();
+    let tuuid = `${uuid} ${timeS}`;
 
     let headers = {
-      "x-correlation-id": "UUID",
-      "x-channel": "BOT",
+      "x-correlation-id": tuuid,
+      "x-channel": logConf.info.channel,
       "Ocp-Apim-Trace" : true,
-      "Ocp-Apim-Subscription-Key": "c3e7baf5ccb1422986d4b1d5ef617f4f"
+      "Ocp-Apim-Subscription-Key": logConf.info.sKey
     };
 
     let body = {
