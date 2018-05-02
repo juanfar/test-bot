@@ -9,8 +9,11 @@
     },
     "ByRoute" : {
         "method": "GET",
-        "url" : "https://avapiacceturedesa.azure-api.net/api/integration/v1/flightstatuswithweather",
-        "type": "openId"
+        "url" : "`https://avapiacceturedesa.azure-api.net/api/integration/v1/flightstatuswithweather?origen=",
+        "type": "openId",
+        "channel": "BOT",
+        "language": "es",
+        "sKey": "c3e7baf5ccb1422986d4b1d5ef617f4f"
     }
 }
 
