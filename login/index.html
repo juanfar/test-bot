@@ -3,104 +3,37 @@
 <head>
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8' />
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" href="lib/main.css">
 <title>Login para varios usuario</title>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
-<style>
-    .main-container {
-      margin-top: 50px;
-    }
-</style>
 </head>
 <body>
   <div class="container">
     <div class="row main-container">
-      <div class="col-md-5 center-block jumbotron">
+      <div class="col-md-3"></div>
+      <div class="col-md-6 center-block jumbotron">
           <h1>Ingresa tus datos</h1>
-        <form class="">
+        <form>
             <div class="form-group">
               <label for="user">Usuario</label>
-              <input type="text" class="form-control" id="user" aria-describedby="emailHelp" placeholder="Enter email">
+              <input type="text" class="form-control" id="user" aria-describedby="emailHelp" placeholder="Enter email" required>
             </div>
             <div class="form-group">
               <label for="pass">Password</label>
-              <input type="password" class="form-control" id="pass" placeholder="Password">
+              <input type="password" class="form-control" id="pass" placeholder="Password" required>
             </div>
             <button type="button" class="btn btn-primary" onclick="myLogin()">Enviar</button>
           </form>
+          <div id="alerta" class="alert" role="alert"></div>
       </div>
+      <div class="col-md-3"></div>
     </div>
     <div class="row main-container">
       <div class="col-md-5">
-        <div id="log">
-          <p></p>
-        </div>
       </div>
     </div>
   </div>
-  
-<script>
-
-    function myLogin() {
-
-    let usuario = document.getElementById('user').value;
-    let password = document.getElementById('pass').value;
-    let log = document.getElementById('log');
-
-    console.log(usuario, password);
-
-    $(function() {
-        var params = {
-          "username": usuario,
-          "password": password,
-          "type": "lifemiles"
-        };
-      
-        $.ajax({
-            url: "https://avapiacceturedesa.azure-api.net/api/auth/v1/login?" + $.param(params),
-            beforeSend: function(xhrObj){
-                // Request headers
-                xhrObj.setRequestHeader("Accept-Language","es");
-                xhrObj.setRequestHeader("x-channel","BOT");
-                xhrObj.setRequestHeader("x-correlation-id","UUID");
-                xhrObj.setRequestHeader("Content-Type","application/json");
-                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","c3e7baf5ccb1422986d4b1d5ef617f4f");
-            },
-            type: "POST",
-            // Request body
-            data: JSON.stringify(params),
-        })
-        .done(function(data) {
-            //alert("success");
-            console.log(data);
-            log.innerHTML = 'usuario logueado';
-        })
-        .fail(function() {
-            //alert("error");
-            log.innerHTML = 'Error de Autenticacion, datos erroneos';
-        });
-    });
-
-    function saveAzure() {
-
-      let d = new Date();
-
-      var storageAccount = "avibotarchcontext";
-      var accountKey = "sYH53B4BkiiAxmts9sZq9UJT+foKwA6P6VxOOjH7Eo28tGcQTm50kDpCs7rgclv3AozMTFuSsAAmRCuAuQ0yQA==";
-      let date = (d.getMonth() + 1) + "-" + d.getDate() + "-" + d.getFullYear();
-      var data = date + "\n" +
-          "/" + storageAccount + " /myTable"
-      // utf-8 encoding
-      var encodedData = unescape(encodeURIComponent(data));
-      // encrypt with your key
-      var hash = CryptoJS.HmacSHA256(encodedData, accountKey);
-      var signature = hash.toString(CryptoJS.enc.Base64);
-      // build the auth header    
-      var auth = "SharedKeyLite " + storageAccount + ":" + signature;
-      // show the full header
-      $("#output").html("Authorization: " + auth);
-    }
-
-};
-</script>
+  <script src="lib/main.js"></script>
+  <script src="lib/azure-storage.table.js"></script>
 </body>
 </html>

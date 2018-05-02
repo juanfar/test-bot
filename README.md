@@ -1,3 +1,5 @@
+![alt text](https://www.avianca.com/etc/designs/avianca/images/logo-avianca.png)
+
 # Achitecture
 
 Guia de uso de componentes del botframework
