@@ -17,7 +17,7 @@ module.exports = [
         .attachments([ 
             new builder.SigninCard(session) 
                 .text("Por favor click en este link para consultar tus millas.") 
-                .button("Ingresar", 'http://avi-bot-arch.azurewebsites.net') 
+                .button("Ingresar", 'https://avi-bot-arch.azurewebsites.net') 
         ]); 
         //session.send(msg);
         builder.Prompts.text(session, msg);
