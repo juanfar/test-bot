@@ -1,3 +1,5 @@
+![alt text](https://www.avianca.com/etc/designs/avianca/images/logo-avianca.png)
+
 # test-bot
 
 App Bot Framework, Node JS y LUIS

@@ -56,7 +56,7 @@ var logger = exports;
 
     let entGen = azure.TableUtilities.entityGenerator;
     let task = {
-      PartitionKey: entGen.String('hometasks'),
+      PartitionKey: entGen.String('logs'),
       RowKey: entGen.String('1'),
       level: entGen.String(level),
       message: entGen.String(message),

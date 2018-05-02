@@ -9,7 +9,7 @@ var azure = require('botbuilder-azure');
 // Intents
 var fStatus = require('./bot/actions/fligthStatus.js'); // Dialogo consulta fligthStatus
 var greet = require('./bot/actions/greeting.js'); // Dialogo Saludo
-//var signin = require('./bot/actions/signin.js'); // Dialogo autenticacion
+var login = require('./bot/actions/login.js'); // Dialogo autenticacion
 var onDefault = require('./bot/actions/default.js'); // Dialogo none
 
 // config
@@ -23,10 +23,15 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
     console.log('%s listening to %s', server.name, server.url); 
  });
 
-server.get('/login', restify.plugins.serveStatic({ // ruta para formulario autenticacion
+/* server.get('/login', restify.plugins.serveStatic({ // ruta para formulario autenticacion
 	'directory': __dirname,
     'default': 'index.html'
-}))
+})) */
+
+server.get(/\/?.*/, restify.plugins.serveStatic({
+    directory: './login',
+    default: 'index.html'
+  }))
 
   
 // Create chat connector for communicating with the Bot Framework Service
@@ -82,6 +87,6 @@ bot.dialog('onDefault', onDefault).triggerAction({ // inicia dialogo None
     intentThreshold: 0.1
 })
   
-/* bot.dialog('signin', signin).triggerAction({ // inicia dialogo autenticacion
-    matches: 'signIn'
-}) */
+bot.dialog('login', login).triggerAction({ // inicia dialogo autenticacion
+    matches: 'logIn'
+})
