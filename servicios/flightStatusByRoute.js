@@ -1,20 +1,27 @@
 'use strict'
 
+var conf = require('./servicios.config.json');
+var int = require('../integracion/int.js'); // importar modulo de integracion
+
 var callApi = function (date, from, to) {
 
-    let urlA = `https://avapiacceturedesa.azure-api.net/api/integration/v1/flightstatuswithweather?origen=${from}&destino=${to}&fechaViajeDT=${date}`;
+    let urlA = `${conf.ByRoute.url}${from}&destino=${to}&fechaViajeDT=${date}`;
 
     const request = require('request');
+
+    let uuid = int.uuid();
+    let timeS = new Date().toJSON().toString();
+    let tuuid = `${uuid} ${timeS}`;
     
     const options = {  
             url: urlA,
-            method: 'GET',
+            method: conf.ByRoute.method,
             gzip: true,
             headers: {
-            'Accept-Language': 'es',
-            'x-channel': 'BOT',
-            'x-correlation-id': 'UUID',
-            'Ocp-Apim-Subscription-Key': 'c3e7baf5ccb1422986d4b1d5ef617f4f',
+            'Accept-Language': conf.ByRoute.language,
+            'x-channel': conf.ByRoute.channel,
+            'x-correlation-id': tuuid,
+            'Ocp-Apim-Subscription-Key': conf.ByRoute.sKey,
             'Accept-Encoding' : 'gzip',
             'cache-control': 'no-cache'
         }

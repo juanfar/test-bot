@@ -83,8 +83,7 @@ const _sendLogInfo = function (options) {
 
 ### Módulo de Autenticación
 
-El módulo de Autenticación `login/index.html`, contiene un formulario html que obtiene los datos 'usuario' y 'password', estos datos son enviados como parametro al servicio de login de Avianca, el cual devuelve un token, que posteriormente sera incluido como parametro del body para hacer post request Table Service Rest API de Azure Storage y asi almacenar el token en la tabla `botdata`. ejemplo:
-
+El módulo de Autenticación `login/index.html`, contiene un formulario html que obtiene los datos 'usuario' y 'password', estos datos son enviados como parametro al servicio de login de Avianca, el cual devuelve un token, que posteriormente sera incluido como parametro del body para hacer post a Azure Storage y asi almacenar el token en la tabla `botdata`, si la autenticación es exitosa la web respondera que se debe escribir la palabra 'autenticado' para que el bot haga la consulta de lifemiles.
 
 ### Logs
 
