@@ -6,6 +6,7 @@ var cMsg = require('../../mensajes/msg.js'); // importar modulo de mensajes din√
 var byRoute = require('../../servicios/flightStatusByRoute.js'); // importar modulo servicio consulta por ruta
 var byNumber = require('../../servicios/flightStatusByNumber.js'); // importar modulo servicio consulta por numero
 var fStatus = require('./fligthStatus.js'); // importar dialogo consulta de fligthStatus
+var logger = require('../../logs/logger.js'); // importar modulo de logs
 var call; // variable de llamada a los servicios
 var _number; // variable de que almacena respuesta de servicio por numero
 var _route; // variable de que almacena respuesta de servicio por ruta

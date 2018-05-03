@@ -46,8 +46,9 @@ var logger = exports;
 
   logger.debug = function(level, sce, message, operation) { // funcion que genera log y hace request POST en azure storage
 
-    let timeS = new Date().toJSON().toString();
+    let uuid = int.uuid();
     let tableSvc = azure.createTableService('avibotarchcontext', 'sYH53B4BkiiAxmts9sZq9UJT+foKwA6P6VxOOjH7Eo28tGcQTm50kDpCs7rgclv3AozMTFuSsAAmRCuAuQ0yQA==');
+    let timeS = new Date().toJSON().toString();
 
     tableSvc.createTableIfNotExists('logs', function(error, result, response){
       if(!error){
@@ -58,7 +59,7 @@ var logger = exports;
     let entGen = azure.TableUtilities.entityGenerator;
     let task = {
       PartitionKey: entGen.String('logs'),
-      RowKey: entGen.String('1'),
+      RowKey: entGen.String(uuid),
       level: entGen.String(level),
       message: entGen.String(message),
       scenary: entGen.String(sce),
