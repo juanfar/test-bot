@@ -70,5 +70,6 @@ var createUUID = function () {
 
 module.exports = {
     sendLogInfo: _sendLogInfo,
-    fstatus: _fstatus
+    fstatus: _fstatus,
+    uuid: createUUID
 }
