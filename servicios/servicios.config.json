@@ -9,7 +9,7 @@
     },
     "ByRoute" : {
         "method": "GET",
-        "url" : "`https://avapiacceturedesa.azure-api.net/api/integration/v1/flightstatuswithweather?origen=",
+        "url" : "https://avapiacceturedesa.azure-api.net/api/integration/v1/flightstatuswithweather?origen=",
         "type": "openId",
         "channel": "BOT",
         "language": "es",
