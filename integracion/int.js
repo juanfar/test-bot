@@ -2,13 +2,15 @@
 
 const config = require('../config.json'); // importar modulo configuraciones generales
 
-const _sendLogInfo = function (options) { // request a la API de logs
+const _openId = function (options, method) { // request a la API de logs
 
     const request = require('request');
 
-    return new Promise(function(resolve, reject) {
+    let metodo = method;
+
+    return new Promise((resolve, reject) => {
     	// Do async job
-        request.post(options, function(err, resp, body) {
+        request.metodo(options, (err, resp, body) => {
             if (err) {
                 reject(err);
             } else {
@@ -19,38 +21,8 @@ const _sendLogInfo = function (options) { // request a la API de logs
     })
 }
 
-const _fstatus = function (options) {
+const _securePost = function (options, method) { // request a la API de logs
 
-    const request = require('request');
-
-    return new Promise(function(resolve, reject) {
-    	// Do async job
-        request.get(options, function(err, resp, body) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(body);
-                console.log('response->', resp.statusCode, '', resp.statusMessage);
-            }
-        })
-    })
-}
- 
-if (config.logs.type == 'openId') {
-    var openId = function () {
-        return headers = {
-            'Accept-Language': 'es',
-            'x-channel': 'BOT',
-            'x-correlation-id': 'UUID',
-            'Ocp-Apim-Subscription-Key': 'c3e7baf5ccb1422986d4b1d5ef617f4f',
-        }
-    }
-}
-
-if (config.logs.type == 'securePost') {
-    var securePost = function () {
-       
-    }
 }
 
 var createUUID = function () {
@@ -69,7 +41,7 @@ var createUUID = function () {
 }
 
 module.exports = {
-    sendLogInfo: _sendLogInfo,
-    fstatus: _fstatus,
+    openId: _openId,
+    securePost: _securePost,
     uuid: createUUID
 }

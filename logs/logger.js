@@ -34,23 +34,25 @@ var logger = exports;
       body: JSON.stringify(body)
     };
 
-    let sendInfo = int.sendLogInfo(options);
+    if (config.logs.type == 'openId') {
 
-    sendInfo.then(function(result) {
+      let sendInfo = int.openId(options, config.logs.method);
 
-      }, function(err) {
-          console.log('ERR', err);
-      })
+    } else {
+
+      let sendInfo = int.securePost(options, config.logs.method);
+
+    }
 
   }
 
   logger.debug = function(level, sce, message, operation) { // funcion que genera log y hace request POST en azure storage
 
     let uuid = int.uuid();
-    let tableSvc = azure.createTableService('avibotarchcontext', 'sYH53B4BkiiAxmts9sZq9UJT+foKwA6P6VxOOjH7Eo28tGcQTm50kDpCs7rgclv3AozMTFuSsAAmRCuAuQ0yQA==');
+    let tableSvc = azure.createTableService(config.azure.storageName, config.azure.storageKey);
     let timeS = new Date().toJSON().toString();
 
-    tableSvc.createTableIfNotExists('logs', function(error, result, response){
+    tableSvc.createTableIfNotExists(config.azure.storageName, function(error, result, response){
       if(!error){
         // Table exists or created
       }
