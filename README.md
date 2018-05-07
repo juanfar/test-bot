@@ -64,20 +64,11 @@ bot.dialog('GreetingDialog', greet).triggerAction({
 El módulo de integración `integracion/int.js`, permite hacer la conexión con las APIs externas que seran usadas por el bot, se debe exportar una función en la que como parametro deben entrar las opciones del request de la API. Ejemplo:
 
 ```
-const _sendLogInfo = function (options) {
+const _openId = function (url, options) { // request a la API de logs
 
-    const request = require('request');
-
-    return new Promise(function(resolve, reject) {
-    	// Do async job
-        request.post(options, function(err, resp, body) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(body);
-            }
-        })
-    })
+    const fetch = require('node-fetch');
+    
+    return fetch(url, options);
 }
 ```
 

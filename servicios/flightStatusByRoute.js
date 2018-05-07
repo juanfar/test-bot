@@ -7,8 +7,6 @@ var callApi = function (date, from, to) {
 
     let urlA = `${conf.ByRoute.url}${from}&destino=${to}&fechaViajeDT=${date}`;
 
-    const request = require('request');
-
     let uuid = int.uuid();
     let timeS = new Date().toJSON().toString();
     let tuuid = `${uuid} ${timeS}`;
@@ -27,16 +25,9 @@ var callApi = function (date, from, to) {
         }
     };
 
-    return new Promise(function(resolve, reject) {
-    	// Do async job
-        request.get(options, function(err, resp, body) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(JSON.parse(body));
-            }
-        })
-    })
+    let sendInfo = int.openId(urlA, options);
+
+    return sendInfo.then(res => res.json());
 }
 
 module.exports = {

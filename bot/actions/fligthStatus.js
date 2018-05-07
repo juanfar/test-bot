@@ -6,6 +6,7 @@ var cMsg = require('../../mensajes/msg.js'); // importar modulo de mensajes dinÃ
 var byRoute = require('../../servicios/flightStatusByRoute.js'); // importar modulo servicio consulta por ruta
 var byNumber = require('../../servicios/flightStatusByNumber.js'); // importar modulo servicio consulta por numero
 var logger = require('../../logs/logger.js'); // importar modulo de logs
+var context = require('../../context/context.json');
 var call; // variable de llamada a los servicios
 var _number; // variable de que almacena respuesta de servicio por numero
 var _route; // variable de que almacena respuesta de servicio por ruta
@@ -15,6 +16,8 @@ var validar;
 module.exports = [
 
     (session, args) => {
+
+        session.dialogData.context = context.fstatus;
 
         //////////////////////////////// reconocimiento de entidades //////////////////////////////
 
@@ -77,13 +80,12 @@ module.exports = [
             else if(session.conversationData.sNumber) { // si tengo fecha y numero
                 
                 logger.info('info', 'Ruta DATE/NUMBER', 'flightStatus');
-                logger.debug('debug', `Ruta DATE/NUMBER -> Fecha:${session.conversationData.sDate} -> Numero:${session.conversationData.sNumber}`, 'flightStatus');    
+                logger.debug('debug', `Ruta DATE/NUMBER -> Fecha:${session.conversationData.sDate} -> Numero:${session.conversationData.sNumber}`, 'flightStatus');   
 
                 call = byNumber.api(session.conversationData.sDate, session.conversationData.sNumber);
 
-                call.then(function(result) {
-                    _number = result;
-                    console.log("Initialized _number");
+                call.then(json => {
+                    _number = json;
 
                     if(_number.flights) {
                         let message = cMsg.msgNumber(_number.flights);
@@ -91,10 +93,8 @@ module.exports = [
                     } else {
                         session.send(msg.status.noNumber);
                     }
-
-                }, function(err) {
-                    console.log('ERR', err);
                 })
+                .catch(err => console.error(err));
 
                 session.endConversation();
             }
@@ -105,9 +105,8 @@ module.exports = [
 
                 call = byRoute.api(session.conversationData.sDate, session.conversationData.origen, session.conversationData.destino);
 
-                call.then(function(result) {
-                    _route = result;
-                    console.log("Initialized _route");
+                call.then(json => {
+                    _route = json;
 
                     if(_route.flights) {
                         if (_route.flights.length > 1) {
@@ -116,11 +115,8 @@ module.exports = [
                             session.send(message);
                         }
                     } else session.send(msg.status.noRoute);
-                            
-
-                }, function(err) {
-                            console.log('ERR', err);
                 })
+                .catch(err => console.error(err));
                         
                 session.endConversation();
             }

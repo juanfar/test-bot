@@ -7,6 +7,7 @@ var byRoute = require('../../servicios/flightStatusByRoute.js'); // importar mod
 var byNumber = require('../../servicios/flightStatusByNumber.js'); // importar modulo servicio consulta por numero
 var fStatus = require('./fligthStatus.js'); // importar dialogo consulta de fligthStatus
 var logger = require('../../logs/logger.js'); // importar modulo de logs
+var context = require('../../context/context.json');
 var call; // variable de llamada a los servicios
 var _number; // variable de que almacena respuesta de servicio por numero
 var _route; // variable de que almacena respuesta de servicio por ruta
@@ -14,6 +15,8 @@ var _route; // variable de que almacena respuesta de servicio por ruta
 module.exports = [
 
     (session, args) => {
+
+        session.dialogData.context = context.none;
 
         // reconocimiento de entidades
 
@@ -34,10 +37,10 @@ module.exports = [
                 logger.info('info', 'Ruta DATE/NUMBER', 'None');
                 logger.debug('debug', `Ruta DATE/NUMBER -> Fecha:${session.conversationData.sDate} -> Numero:${session.conversationData.sNumber}`, 'None');
 
-                        call = byNumber.api(session.conversationData.sDate, session.conversationData.sNumber); // llamado al servicio por numero
-                        call.then(function(result) {
-                            _number = result;
-                            console.log("Initialized _number");
+                        call = byNumber.api(session.conversationData.sDate, session.conversationData.sNumber);
+
+                        call.then(json => {
+                            _number = json;
 
                             if(_number.flights) {
                                 let message = cMsg.msgNumber(_number.flights);
@@ -45,10 +48,8 @@ module.exports = [
                             } else {
                                 session.send(msg.status.noNumber);
                             }
-
-                        }, function(err) {
-                            console.log('ERR', err);
                         })
+                        .catch(err => console.error(err));
 
                         session.endConversation();
 
@@ -56,26 +57,22 @@ module.exports = [
                 logger.info('info', 'flujo DATE/FROMandTO', 'None');
                 logger.debug('debug', `flujo DATE/FROMandTO -> Fecha:${session.conversationData.sDate} -> Origen:${session.conversationData.origen} -> Destino:${session.conversationData.destino}`, 'None');
 
-                call = byRoute.api(session.conversationData.sDate, session.conversationData.origen, session.conversationData.destino); // llamado al servicio por ruta
+                call = byRoute.api(session.conversationData.sDate, session.conversationData.origen, session.conversationData.destino);
 
-                            call.then(function(result) {
-                                _route = result;
-                                console.log("Initialized _route");
+                call.then(json => {
+                     _route = json;
+            
+                    if(_route.flights) {
+                        if (_route.flights.length > 1) {
+                            session.send(msg.status.findFligths);
+                            let message = cMsg.msgRoute(_route.flights);
+                            session.send(message);
+                        }
+                    } else session.send(msg.status.noRoute);
+                })
+                .catch(err => console.error(err));
 
-                                if(_route.flights) {
-                                    if (_route.flights.length > 1) {
-                                        session.send(msg.status.findFligths);
-                                        let message = cMsg.msgRoute(_route.flights);
-                                        session.send(message);
-                                    }
-                                } else session.send(msg.status.noRoute);
-                                
-
-                            }, function(err) {
-                                console.log('ERR', err);
-                            })
-
-                            session.endConversation();
+                session.endConversation();
 
             } else {
 
@@ -110,26 +107,22 @@ module.exports = [
 
             if(sTo) session.conversationData.origen = sTo;
 
-            call = byRoute.api(session.conversationData.sDate, session.conversationData.origen, session.conversationData.destino); // llamado al servicio por ruta
+            call = byRoute.api(session.conversationData.sDate, session.conversationData.origen, session.conversationData.destino);
 
-                            call.then(function(result) {
-                                _route = result;
-                                console.log("Initialized _route");
+                call.then(json => {
+                     _route = json;
+            
+                    if(_route.flights) {
+                        if (_route.flights.length > 1) {
+                            session.send(msg.status.findFligths);
+                            let message = cMsg.msgRoute(_route.flights);
+                            session.send(message);
+                        }
+                    } else session.send(msg.status.noRoute);
+                })
+                .catch(err => console.error(err));
 
-                                if(_route.flights) {
-                                    if (_route.flights.length > 1) {
-                                        session.send(msg.status.findFligths);
-                                        let message = cMsg.msgRoute(_route.flights);
-                                        session.send(message);
-                                    }
-                                } else session.send(msg.status.noRoute);
-                                
-
-                            }, function(err) {
-                                console.log('ERR', err);
-                            })
-
-                            session.endConversation();
+            session.endConversation();
         }
 
         else if (session.conversationData.pendiente == 'origen') { // si me falta origen
@@ -139,27 +132,23 @@ module.exports = [
             logger.debug('debug', `Ruta FROM -> Destino:${sFrom}`, 'None');
 
             if(sFrom) session.conversationData.origen = sFrom;
+                
+                call = byRoute.api(session.conversationData.sDate, session.conversationData.origen, session.conversationData.destino);
 
-                call = byRoute.api(session.conversationData.sDate, session.conversationData.origen, session.conversationData.destino); // llamado al servicio por ruta
+                call.then(json => {
+                     _route = json;
+            
+                    if(_route.flights) {
+                        if (_route.flights.length > 1) {
+                            session.send(msg.status.findFligths);
+                            let message = cMsg.msgRoute(_route.flights);
+                            session.send(message);
+                        }
+                    } else session.send(msg.status.noRoute);
+                })
+                .catch(err => console.error(err));
 
-                            call.then(function(result) {
-                                _route = result;
-                                console.log("Initialized _route");
-
-                                if(_route.flights) {
-                                    if (_route.flights.length > 1) {
-                                        session.send(msg.status.findFligths);
-                                        let message = cMsg.msgRoute(_route.flights);
-                                        session.send(message);
-                                    }
-                                } else session.send(msg.status.noRoute);
-                                
-
-                            }, function(err) {
-                                console.log('ERR', err);
-                            })
-
-                            session.endConversation();
+                session.endConversation();
         }
     }
 ]

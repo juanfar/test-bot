@@ -58,7 +58,7 @@ function myLogin() {
             access_token: token
         };
         
-        tableService.insertOrReplaceEntity ('botdata', insertEntity, function (error, result, response) {
+        tableService.insertOrReplaceEntity('authdata', insertEntity, function (error, result, response) {
             if (error) {
                 // Insertar error de entidad de tabla
                 alerta.classList.add("alert-danger");
