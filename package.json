@@ -16,6 +16,7 @@
     "dotenv-extended": "^1.0.4",
     "envx": "^1.0.0",
     "express-session": "^1.14.2",
+    "node-fetch": "^2.1.2",
     "passport": "^0.3.2",
     "passport-azure-ad": "^3.0.0",
     "restify": "^6.3.4"

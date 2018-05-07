@@ -2,23 +2,11 @@
 
 const config = require('../config.json'); // importar modulo configuraciones generales
 
-const _openId = function (options, method) { // request a la API de logs
+const _openId = function (url, options) { // request a la API de logs
 
-    const request = require('request');
-
-    let metodo = method;
-
-    return new Promise((resolve, reject) => {
-    	// Do async job
-        request.metodo(options, (err, resp, body) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(body);
-                console.log('response->', resp.statusCode, '', resp.statusMessage);
-            }
-        })
-    })
+    const fetch = require('node-fetch');
+    
+    return fetch(url, options);
 }
 
 const _securePost = function (options, method) { // request a la API de logs

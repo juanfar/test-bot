@@ -24,7 +24,9 @@ var logger = exports;
       "timestamp": timeS,
       "level": level,
       "message": message,
-      "operation": operation
+      "operation": operation,
+      "error": "",
+      "exec-time": 0
     };
 
     let options = {  
@@ -36,7 +38,12 @@ var logger = exports;
 
     if (config.logs.type == 'openId') {
 
-      let sendInfo = int.openId(options, config.logs.method);
+      let sendInfo = int.openId(config.logs.url, options);
+
+      sendInfo.then(res => {
+        console.log('LOG->', res.ok);
+        console.log('LOG->',res.status);
+    });
 
     } else {
 
