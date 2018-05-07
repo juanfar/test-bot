@@ -30,7 +30,7 @@ module.exports = [
     (session, results) => {
         session.dialogData.auth = results.response;
         if (session.dialogData.auth == 'autenticado') {
-            tableService.retrieveEntity('botdata', 'auth', session.conversationData.uuid, function(error, result, response) {
+            tableService.retrieveEntity(config.azure.table.auth, 'auth', session.conversationData.uuid, function(error, result, response) {
                 if (!error) {
                     session.send(response.body.access_token);
                 }
