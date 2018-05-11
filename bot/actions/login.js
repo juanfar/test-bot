@@ -2,8 +2,8 @@
 
 var azure = require('azure-storage');
 const builder = require('botbuilder');
-let msg = require('../../mensajes/msg.json');
-let cMsg = require('../../mensajes/msg.js');
+var msg = require('../../mensajes/msg.json');
+var cMsg = require('../../mensajes/msg.js');
 var config = require('../../config.json'); // importar modulo configuraciones generales
 var int = require('../../integracion/int.js'); // importar modulo de integracion
 var context = require('../../context/context.json');
@@ -18,14 +18,14 @@ module.exports = [
         session.dialogData.context = context.login;
         
         session.conversationData.uuid = int.uuid();
-        var msg = new builder.Message(session) 
+        var mess = new builder.Message(session) 
         .attachments([ 
             new builder.SigninCard(session) 
-                .text("Por favor click en este link para consultar tus millas.") 
-                .button("Ingresar", `http://avi-bot-arch.azurewebsites.net?${session.conversationData.uuid}`) 
+                .text(msg.login.textMillas) 
+                .button(msg.login.buttonMillas, `${config.webLink}?${session.conversationData.uuid}`) 
         ]); 
         //session.send(msg);
-        builder.Prompts.text(session, msg);
+        builder.Prompts.text(session, mess);
     },
     (session, results) => {
         session.dialogData.auth = results.response;
